@@ -5,6 +5,9 @@ The QuantumRules framework was developed with expandability in mind. Future deve
 
 To accomplish this, the framework has been designed with modularity in mind. It contains a lot of pre-fabd features that help programmers to quickly and independently develop new components without further knowledge about the framework. In this README.md a quick overview will be given on what is needed to develop the software and how you develop within the given framework.
 
+## Package versions note
+This framework is reliant on a few packages. Please refer to the **requirements.txt** file to find used versions of the packages!
+
 # Getting started
 To get started, a few steps need to be taken beforehand. Because this framework is based on a few packages and 3rd party systems, you'll need to set those up before development can start.
 1. Create a new virtualenvironment with venv.
