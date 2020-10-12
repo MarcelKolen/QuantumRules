@@ -71,3 +71,17 @@ To add rules, such as for example:
 > an item may only be seen if at least 5 other items have been completed
 
 Is fairly easy to implement. To implement new rules you will have to add new logic to the rules files. These can be found under **game/running_rules**. The file **game/running_rules/item_running_rules.py** is where the new rules are registered and the actual rules are in **game/running_rules/rules**. In the **rules** folder you can add new logic to which a game or an item will be tested. Make sure to also add a socket variant (without and request handling). Once a new rule has been created, register it in the **item_running_rules.py** file.
+
+# Front end user input
+An important aspect of this framework is that the user input from an item on the frontend has been standardized between *websocket* and *HTTP* input. The standard is that the user input from form fields should all be contained within one ```<form>``` tag. You can use multiple form-tags, but then every formtag should contain the base data from the form in **game/base/base_running_item.html**. You can also merge multiple forms with the use of javascript. When the user submits data, either through an *HTTP request* or a *Websocket event*, the userdata will be converted from raw formdata into a **python dictionary**. This dictionary will have the same fields as the HTML form field names have. If wanted, you can also use the raw *HTTP request* data or the raw *Websocket event* data. This does require you to do custom parsing over these datasets.
+
+# General game structure
+Games are build up from multiple components. It might be helpfull to understand how a game is setup when you want to develop new components/modules for it.
+### Games
+At the core of a game is a Game object. This object will house all the categories and some global settings such as maximum play time.
+### Categories
+A game can have multiple categories. These categories are used to house items and either link them together or host them independently of one and another. If they are linked together, finishing an item will automatically bring you to the next item in order.
+### GameItemLinks
+A GameItemLink is an object that connects module items (the actual playable components such as MultipleChoice questions) to the game. A GameItemLink must exist within a category. A GameItemLink can host any type of module item. The state of an item is stored within these links
+### Module items
+Modules items are the actual playable components within a game. In order to use a module item in a game, you need to link them using a GameItemLink. You can link a module item as many times as you want. The state of a module item is by default not related to the module item itself, but rather to the GameItemLink.
