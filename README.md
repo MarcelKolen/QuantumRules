@@ -63,3 +63,10 @@ These methods **cannot** be named differently. You are however free to add any a
 5. **OPTIONAL** Optionally you can choose to use the build in django forms and the crispy-forms expansion to add easy formhandling and creation to your modules. These forms are based under **modules/forms**. There you can create a new folder and create new forms which can use in your views and templates
 ## recommendations
 I highly recommend to study existing modules, such as *TextItem* and *MultipleChoice* to understand how the methods of the module framework work. These methods will also have a more detailed description as to what they are supposed to do. I also recommend to experiment with simpler and smaller modules first before implementing a big one to get a feel for them.
+
+# New game and item rules
+Games are constantly evolving and should therefor be flexible in their rules. Flexibility also includes being able to extend them. Because of that, this framework is fully expandable in terms of game and item rules. Adding new rules to the game have been made relatively straight forward.
+## Adding rules within the game rendering engine
+To add rules, such as for example: 
+> an item may only be seen if at least 5 other items have been completed
+Is fairly easy to implement. To implement new rules you will have to add new logic to the rules files. These can be found under **game/running_rules**. The file **game/running_rules/item_running_rules.py** is where the new rules are registered and the actual rules are in **game/running_rules/rules**. In the **rules** folder you can add new logic to which a game or an item will be tested. Make sure to also add a socket variant (without and request handling). Once a new rule has been created, register it in the **item_running_rules.py** file.
