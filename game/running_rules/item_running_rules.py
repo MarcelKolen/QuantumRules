@@ -3,8 +3,8 @@ from django.contrib import messages
 
 from QR2.settings import DEBUG
 
-from .item_complete import item_is_complete, item_is_complete_socket
-from .item_in_game import item_in_game, item_in_game_socket
+from .rules import item_is_complete, item_is_complete_socket
+from .rules import item_in_game, item_in_game_socket
 
 
 def render_item_rules(request, item, game):
