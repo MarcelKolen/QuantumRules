@@ -69,4 +69,5 @@ Games are constantly evolving and should therefor be flexible in their rules. Fl
 ## Adding rules within the game rendering engine
 To add rules, such as for example: 
 > an item may only be seen if at least 5 other items have been completed
+
 Is fairly easy to implement. To implement new rules you will have to add new logic to the rules files. These can be found under **game/running_rules**. The file **game/running_rules/item_running_rules.py** is where the new rules are registered and the actual rules are in **game/running_rules/rules**. In the **rules** folder you can add new logic to which a game or an item will be tested. Make sure to also add a socket variant (without and request handling). Once a new rule has been created, register it in the **item_running_rules.py** file.
