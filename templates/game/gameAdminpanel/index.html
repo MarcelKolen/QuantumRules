@@ -1,0 +1,33 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% block body_content %}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="jumbotron">
+                <h1 class="display-3">Games</h1>
+                <hr class="my-4">
+                <p>Hier kunnen <b>games</b> worden gemaakt, aangepast, verwijderd en gepubliceerd.</p>
+                <a class="btn btn-primary btn-lg" href="{% url 'game:adminpanelGames' %}" role="button">Ga naar games</a>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="jumbotron">
+                <h1 class="display-3">Game items</h1>
+                <hr class="my-4">
+                <p>Hier kunnen <b>game items</b> worden gemaakt, aangepast, verwijderd en gepubliceerd.</p>
+                <a class="btn btn-primary btn-lg" href="{% url 'game:adminpanelModules' %}" role="button">Ga naar game items</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="jumbotron">
+                <h1 class="display-3">Game Masters</h1>
+                <hr class="my-4">
+                <p>Hier kunnen <b>game master</b> spellen begeleiden.</p>
+                <a class="btn btn-primary btn-lg" href="{% url 'game:gamemasterIndex' %}" role="button">Ga naar Game Master paneel</a>
+            </div>
+        </div>
+    </div>
+{% endblock body_content %}

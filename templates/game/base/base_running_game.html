@@ -1,0 +1,189 @@
+{% extends 'game/base/base.html' %}
+{% block body_content %}
+
+    <!-- Score bar and information bar -->
+    {% if game and categories %}
+        <div class="jumbotron">
+            <h1 class="display-4 text-center">{{ game.gameName }}</h1>
+            {% if game.noDateNorTime is False and game.startDateTime is not None and game.endDateTime is not None %}
+                <hr class="my-4">
+                <h3 class="text-center">Spel timer</h3>
+                <p class="lead text-center" id="timeBody"></p>
+            {% endif %}
+            {% if game.max_score > 0 %}
+                <hr class="my-4">
+                <h3 class="text-center">Behaalde score.</h3>
+                <ul>
+                    {% for category in categories %}
+                        {% if category.maxCategoryScore > 0 %}
+                            <li>
+                                <b>{{ category }}:</b>
+                                <div class="progress">
+                                    <div class="progress-bar {% if category.score_percentage > 0 %}bg-succes{% else %}bg-secondary{% endif %}"
+                                         id="score{{ category.categoryID }}" role="progressbar"
+                                         style="width:
+                                                 {% if category.score_percentage > 0 %}{{ category.score_percentage }}{% else %}100{% endif %}%;"
+                                         aria-valuenow="{{ category.score_percentage }}" aria-valuemin="0"
+                                         aria-valuemax="100">{{ category.score_percentage }}%
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if game.open is False %}
+                <hr class="my-4">
+                <h3 class="text-center" style="color: red;">Let op, spel is nog niet geopend!</h3>
+            {% endif %}
+        </div>
+        <hr class="my-4">
+    {% endif %}
+
+    {% block game_content %}
+    {% endblock game_content %}
+
+{% endblock body_content %}
+
+{% block base_javascript %}
+
+    {% if game %}
+        <!-- Not published warning -->
+        {% if not game.published %}
+            <script>
+                errorMessage("warning", "Let op:", "dit spel is <i>niet</i> gepubliceerd en dus ook niet toegankelijk voor anderen! <small>U kunt dit spel alleen zien omdat uw account een beheerder/gamemaster account is.</small>", $("#errorMessage"));
+            </script>
+        {% endif %}
+
+        {% if game.noDateNorTime is False and game.startDateTime is not None and game.endDateTime is not None %}
+
+            <script>
+                $(document).ready(function () {
+                    /* Fetch start and end time from server and convert to ISO-8601 standard */
+                    var startDate = new Date("{{ game.startDateTime|date:'Y-m-d' }}T{{ game.startDateTime|time:'H:i:s' }}").getTime();
+                    var countDownDate = new Date("{{ game.endDateTime|date:'Y-m-d' }}T{{ game.endDateTime|time:'H:i:s' }}").getTime();
+                    var showedLowTime = false;
+
+                    var distance;
+
+                    function setTimer() {
+                        /* Get today's date and time */
+                        var now = new Date().getTime();
+
+                        if (now >= startDate) {
+
+                            /* Find the distance between now and the count down date */
+                            distance = countDownDate - now;
+
+                            /* Time calculations for days, hours, minutes and seconds */
+                            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                            var resultString = "";
+
+                            if (days > 0)
+                                resultString += days + "d ";
+                            if (hours > 0)
+                                resultString += hours + "h ";
+                            if (minutes > 0)
+                                resultString += minutes + "m ";
+                            resultString += seconds + "s ";
+
+                            /* Output the result */
+                            $("#timeBody").html(resultString);
+
+                            /* Show almostTime modal between 5 minutes and 0 minutes */
+                            if (!showedLowTime && days < 1 && hours < 1 && minutes < 5 && distance > 0) {
+                                showedLowTime = true;
+                                popupMessage("Let op, de tijd is bijna op!<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-alarm\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" d=\"M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1h-3zm1.038 3.018a6.093 6.093 0 0 1 .924 0 6 6 0 1 1-.924 0zM8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5zM0 3.5c0 .753.333 1.429.86 1.887A8.035 8.035 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5zM13.5 1c-.753 0-1.429.333-1.887.86a8.035 8.035 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1z\"/></svg>", "Let op!", "Sluiten", false);
+                                $("#timeBody").css("color", "red");
+                            }
+
+                            /* If the count down is over, write some text */
+                            if (distance < 0) {
+                                if (typeof intervalVar !== "undefined")
+                                    clearInterval(intervalVar);
+                                popupMessage("<b>Tijd is op! <svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-alarm-fill\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" d=\"M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527zM8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5z\"/></svg></b>", "Let op!", "Sluiten", false);
+                                $("#timeBody").css("color", "red").html("<b>Tijd is op! <svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-alarm-fill\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" d=\"M6 .5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H9v1.07a7.001 7.001 0 0 1 3.274 12.474l.601.602a.5.5 0 0 1-.707.708l-.746-.746A6.97 6.97 0 0 1 8 16a6.97 6.97 0 0 1-3.422-.892l-.746.746a.5.5 0 0 1-.707-.708l.602-.602A7.001 7.001 0 0 1 7 2.07V1h-.5A.5.5 0 0 1 6 .5zM.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527zM8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5z\"/></svg></b>");
+                            }
+                        } else {
+                            $("#timeBody").html("Het spel begint pas om test: <b>{{ game.startDateTime|time:'H:i:s' }}</b>" + " === " + countDownDate);
+                        }
+                    }
+
+                    setTimer();
+                    /* Update the time countdown every 1 second */
+                    var intervalVar = setInterval(function () {
+                        setTimer();
+                    }, 1000);
+                });
+            </script>
+
+        {% endif %}
+    {% endif %}
+
+    {% block baseRunningGame_socket %}
+
+        <script>
+            {% if game %}
+                $(document).ready(function () {
+                    var endpoint = wsStart + '/game/{{ game.gameID }}/';
+
+                    const gameSocket = new ReconnectingWebSocket(endpoint, null, {reconnectInterval: 3000, maxReconnectAttempts: 10});
+
+                    gameSocket.onmessage = function (event) {
+                        {% block baseRunningGame_socket_onmessage %}
+
+                            var parsedData = JSON.parse(event.data);
+
+                            if (parsedData.event === "scoreUpdate") {
+                                /* Update scorebar as new scores come in */
+                                updateScoreBar(parsedData.currentScore, parsedData.maxScore, "#score" + parsedData.category);
+                            } else if (parsedData.event === "generalAnnouncement") {
+                                /* Catch data and populate a modal for a general announcement send by a gamemaster */
+                                popupMessage(parsedData.generalAnnouncementBody, parsedData.generalAnnouncementTitle, "Sluiten", true, 1500);
+                            } else if (parsedData.event === "gameComplete") {
+                                /* Catch data and populate a modal for a game over/complete announcement */
+                                popupMessage("Het spel is afgelopen! Jullie hebben alle vragen binnen de tijd afgesloten. De behaalde score is **" + parsedData.obtainedScore + "** punten van de **" + parsedData.maxScore + "** punten!", "Spel is afgelopen!", "Sluiten", true, 1500);
+                            }
+
+                        {% endblock baseRunningGame_socket_onmessage %}
+                    };
+
+                    gameSocket.onopen = function (event) {
+                        {% block baseRunningGame_socket_onopen %}
+
+                            socket_connection_succes();
+                            console.log("Open game_socket", event);
+
+                        {% endblock baseRunningGame_socket_onopen %}
+                    };
+
+                    gameSocket.onerror = function (event) {
+                        {% block baseRunningGame_socket_onerror %}
+
+                            socket_connection_error($("#errorMessage"));
+                            console.log("Error", event);
+
+                        {% endblock baseRunningGame_socket_onerror %}
+                    };
+
+                    gameSocket.onclose = function (event) {
+                        {% block baseRunningGame_socket_onclose %}
+
+                            console.log("Close", event);
+
+                        {% endblock baseRunningGame_socket_onclose %}
+                    };
+                });
+            {% endif %}
+        </script>
+
+    {% endblock baseRunningGame_socket %}
+
+    {% block baseRunningGame_javascript %}
+    {% endblock baseRunningGame_javascript %}
+
+{% endblock base_javascript %}

@@ -1,0 +1,40 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% block body_content %}
+
+    {% if games %}
+        <h1>Alle huidige spellen</h1>
+        <hr class="my-4">
+        <ul>
+            {% for game in games %}
+                <li>
+                    <h3><a href="{% url 'game:gamemasterPanel' game.gameID %}">{{ game }}</a>:</h3>
+                    starts({{ game.startDateTime|date:'D d-m-Y' }} {{ game.startDateTime|time:'H:i:s' }}),
+                    ends({{ game.endDateTime|date:'D d-m-Y' }} {{ game.endDateTime|time:'H:i:s' }}),
+                    {% if game.open == True %}<b style="color:green">Open</b>{% elif game.open == False %}
+                        <b style="color:red">Gesloten</b>{% endif %}
+                    {% if game.published == True %}<b style="color:green">Gepubliseerd</b>{% endif %}
+
+                    <!-- Edit game -->
+                    <form action="{% url 'game:gamemasterPanel' game.gameID %}" method="get">
+                        <button type="submit" class="btn btn-primary">
+                            Ga naar spelpaneel
+                        </button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+    <div class="row">
+        <div class="col-sm">
+            <div class="jumbotron">
+                <h1 class="display-3">Er zijn nog geen spellen gepubliceerd!</h1>
+                <hr class="my-4">
+                <p>Er moet eerst een spel worden gepubliceerd voordat deze beschikbaar is voor de Game Masters</p>
+                <a class="btn btn-primary btn-lg" href="{% url 'game:adminpanelGames' %}" role="button">Ga naar games</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock body_content %}

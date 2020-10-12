@@ -1,0 +1,16 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block body_content %}
+    <div class="jumbotron">
+        <h1 class="display-3">Inloggen</h1>
+        <p class="lead">Log in met uw gegevens.</p>
+        <hr class="my-4">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-primary" type="submit">
+        </form>
+    </div>
+{% endblock body_content %}

@@ -1,0 +1,134 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block navbar_navitems %}
+    {{ block.super }}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'game:adminpanelGamesEdit' game.gameID %}"><b>Ga terug naar</b>
+            <i>{{ game }}</i></a>
+    </li>
+{% endblock navbar_navitems %}
+
+{% block body_content %}
+    <!-- Category and items edit -->
+    {% if game and category %}
+        <!-- Category settings -->
+        <h1 id="categoryNameHeader">{{ category.categoryName }}</h1>
+        <form method="post">
+            <div class="row">
+                <div class="col-md-12">
+                    {% csrf_token %}
+                    {{ categoryForm|crispy }}
+                </div>
+            </div>
+
+            <!-- Items formset -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Items</h3>
+                    {% if gameItems %}
+                        {% csrf_token %}
+                        {{ currentItemsForm.management_form }}
+
+                        <!-- Item settings -->
+                        <div class="accordion" id="categorieAccordion">
+                            {% for form in currentItemsForm %}
+                                <div class="accordion" id="categorieAccordion">
+                                    <div class="card">
+                                        <div class="card-header" id="heading{{ forloop.counter }}">
+                                            <h2 class="mb-0">
+                                                <button class="btn btn-link btn-block text-left {% if not forloop.first %}collapsed{% endif %}"
+                                                        type="button" data-toggle="collapse"
+                                                        data-target="#collapse{{ forloop.counter }}"
+                                                        aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                                        aria-controls="collapseOne">
+                                                    {{ form.instance }} (Type: {{ form.instance.module.type_str }})
+                                                </button>
+                                            </h2>
+                                        </div>
+                                        <div id="collapse{{ forloop.counter }}"
+                                             class="collapse {% if forloop.first %}show{% endif %}"
+                                             aria-labelledby="heading{{ forloop.counter }}"
+                                             data-parent="#categorieAccordion">
+                                            <div class="card-body">
+                                                {{ form|crispy }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>Er zijn geen items</p>
+                    {% endif %}
+                </div>
+            </div>
+            <br/>
+
+            <input type="hidden" name="gameID" value="{{ game.gameID }}">
+            <input type="hidden" name="categoryID" value="{{ category.categoryID }}">
+
+            <!-- Submit button -->
+            {% if game.published == False %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">
+                            Aanpassen
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+
+        </form>
+
+        {% if game.published == False %}
+            <hr class="my-4">
+
+            <!-- Add item form -->
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="{% url 'game:adminpanelCategoriesAddItemConstruct' %}" method="get">
+                        {% csrf_token %}
+                        <input type="hidden" name="categoryID" value="{{ category.categoryID }}">
+                        <input type="hidden" name="gameID" value="{{ game.gameID }}">
+                        {{ prime_item_form|crispy }}
+
+                        <button type="submit" class="btn btn-primary">
+                            Voeg een nieuwe item toe
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+{% endblock body_content %}
+
+{% block baseAdminpanel_javascript %}
+
+    <script>
+        $(document).ready(function () {
+            categoryNameInputField = $("#id_categoryName");
+            categoryNameHeader = $("#categoryNameHeader");
+
+            categoryNameInputField.bind('input propertychange', function () {
+                if (categoryNameInputField.val() !== "")
+                    categoryNameHeader.text(categoryNameInputField.val());
+                else
+                    categoryNameHeader.text("{{ category.categoryName }}");
+            });
+        })
+    </script>
+
+{% endblock baseAdminpanel_javascript %}

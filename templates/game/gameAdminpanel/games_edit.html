@@ -1,0 +1,285 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block body_content %}
+
+    {% if game %}
+        <h1 id="gameNameHeader">{{ game.gameName }}</h1>
+        <hr class="my-4">
+        <!--Send announcement -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Verstuur een aankondiging</h3>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5>Voorbeeld van aankondiging: </h5>
+                        <hr class="my-4">
+                        <div id="result"></div>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <form action="{% url 'game:makeAnnouncement' %}" method="post">
+                    {% csrf_token %}
+                    {{ announcementForm|crispy }}
+                    <input type="hidden" name="gameID" value="{{ game.gameID }}">
+                    <button type="submit" class="btn btn-primary">
+                        Versturen!
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope-fill"
+                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- Change game -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Spelinstellingen</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ gameForm|crispy }}
+                    <p><b>SpelID:</b> <i>{{ game.gameID }}</i></p><input type="hidden" name="id"
+                                                                         value="{{ game.gameID }}">
+                    <p><b>Aangemaakt op:</b> <i>{{ game.publicationDate|date:'D d-m-Y H:i' }}</i></p>
+                    <p><b>Laatst aangepast op:</b> <i>{{ game.lastChangedDate|date:'D d-m-Y H:i' }}</i></p>
+
+                    <!-- Edit game button -->
+                    <button type="submit" class="btn btn-primary">
+                        Aanpassen
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill"
+                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                        </svg>
+                    </button>
+                </form>
+
+                <!-- Remove game button -->
+                {% if game.published == False %}
+                    <form action="{% url 'game:adminpanelGamesDelete' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ game.gameID }}">
+                        <button type="submit" class="btn btn-danger">
+                            Verwijderen
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill"
+                                 fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                            </svg>
+                        </button>
+                    </form>
+                {% endif %}
+
+                <!-- Publish game button -->
+                <form action="{% url 'game:adminpanelGamesEditPublish' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ game.gameID }}">
+                    <button type="submit" class="btn {% if game.published == True %}btn-warning">
+                        De-publiceren{% elif game.published == False %}
+                        btn-primary"> publiceren{% endif %}
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-newspaper" fill="currentColor"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5v-11zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5H12z"/>
+                        <path d="M2 3h10v2H2V3zm0 3h4v3H2V6zm0 4h4v1H2v-1zm0 2h4v1H2v-1zm5-6h2v1H7V6zm3 0h2v1h-2V6zM7 8h2v1H7V8zm3 0h2v1h-2V8zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1zm-3 2h2v1H7v-1zm3 0h2v1h-2v-1z"/>
+                    </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col-md-12">
+            {% if categories %}
+                <div class="accordion" id="categorieAccordion">
+                    {% for category in categories %}
+                        <!-- Categories and game Items -->
+                        <div class="accordion" id="categorieAccordion">
+                            <div class="card">
+                                <div class="card-header" id="heading{{ forloop.counter }}">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left {% if not forloop.first %}collapsed{% endif %}"
+                                                type="button" data-toggle="collapse"
+                                                data-target="#collapse{{ forloop.counter }}"
+                                                aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                                aria-controls="collapseOne">
+                                            {% if game.published == False %}
+                                                <a href="{% url 'game:adminpanelGamesEditCategory' game.gameID category.categoryID %}">
+                                                    {{ category }}
+                                                </a>
+                                            {% elif game.published == True %}
+                                                {{ category }}
+                                            {% endif %}
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <!-- Game Items -->
+                                <div id="collapse{{ forloop.counter }}"
+                                     class="collapse {% if forloop.first %}show{% endif %}"
+                                     aria-labelledby="heading{{ forloop.counter }}" data-parent="#categorieAccordion">
+                                    <div class="card-body">
+                                        <p>obtained score: {{ category.obtainedCategoryScore }}, max
+                                            score: {{ category.maxCategoryScore }}</p>
+                                        <p><b>Categorie naam:</b> {{ category }}</p>
+                                        <p><b>Sequentieel verloop:</b>
+                                            {% if category.chained == True %}
+                                                <b style="color:green">Ja</b>
+                                            {% elif category.chained == False %}
+                                                <b style="color:red">Nee</b>
+                                            {% endif %}
+                                        </p>
+
+                                        {% if gameItems %}
+                                            <ol>
+                                                {% for item in gameItems %}
+                                                    {% if category.categoryID == item.category.categoryID %}
+                                                        <li>
+                                                            <b>{{ item }}</b>
+                                                            {% if game.published == True %}
+                                                                <i>Bezocht: </i>
+                                                                {% if item.gameItemStateVisited == True %}
+                                                                    <b style="color:green">Ja</b>
+                                                                {% elif item.gameItemStateVisited == False %}
+                                                                    <b style="color:red">Nee</b>{% endif %}
+                                                                <i>Voltooid: </i>
+                                                                {% if item.gameItemStateCompleted == True %}
+                                                                    <b style="color:green">Ja</b>
+                                                                {% elif item.gameItemStateCompleted == False %}
+                                                                    <b style="color:red">Nee</b>{% endif %}
+                                                                {% if item.gameItemStateChangeMinInput > 1 %}
+                                                                    <i>Aantal gegeven antwoorden: </i>
+                                                                    {% if item.gameItemStateGivenNInput >= item.gameItemStateChangeMinInput %}
+                                                                        <b style="color:green">{{ item.gameItemStateGivenNInput }}</b>
+                                                                    {% elif item.gameItemStateGivenNInput < item.gameItemStateChangeMinInput %}
+                                                                        <b style="color:red">{{ item.gameItemStateGivenNInput }}</b>
+                                                                    {% endif %}
+                                                                    <b>/{{ item.gameItemStateChangeMinInput }}</b>
+                                                                {% endif %}
+                                                                <i>Aantal foute antwoorden: </i>
+                                                                {% if item.gameItemStateGivenWrongNInput < item.maxNumAttempts %}
+                                                                    <b style="color:green">{{ item.gameItemStateGivenWrongNInput }}</b>
+                                                                {% elif item.gameItemStateGivenWrongNInput >= item.maxNumAttempts %}
+                                                                    <b style="color:red">{{ item.gameItemStateGivenWrongNInput }}</b>
+                                                                {% endif %}
+                                                                <b>/{{ item.maxNumAttempts }}</b>
+                                                                <i>Verkregen score: </i>
+                                                                <b>{{ item.obtainedScore }}/{{ item.maxScore }}</b>
+                                                                {% if item.gameItemContinueByGM and item.gameItemStateCompleted is False %}
+                                                                    <i>Item ID: </i>
+                                                                    <b>#{{ item.gameItemLinkID }}</b>
+                                                                    <form action="{% url 'game:adminpanelItemFinishByGM' %}"
+                                                                          method="post">
+                                                                        {% csrf_token %}
+                                                                        <input type="hidden" name="itemID"
+                                                                               value="{{ item.gameItemLinkID }}">
+                                                                        <input type="hidden" name="gameID"
+                                                                               value="{{ game.gameID }}">
+                                                                        <input type="number" name="score" min="0"
+                                                                               max="{{ item.maxScore }}"
+                                                                               placeholder="0-{{ item.maxScore }}">
+                                                                        <button type="submit"
+                                                                                class="btn btn-success btn-sm">
+                                                                            Antwoord goedkeuren
+                                                                            <svg width="1em" height="1em"
+                                                                                 viewBox="0 0 16 16"
+                                                                                 class="bi bi-check-circle-fill"
+                                                                                 fill="currentColor"
+                                                                                 xmlns="http://www.w3.org/2000/svg">
+                                                                                <path fill-rule="evenodd"
+                                                                                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </form>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ol>
+                                            <!-- Category remove button -->
+                                            {% if game.published == False %}
+                                                <form action="{% url 'game:adminpanelCategoriesDelete' %}"
+                                                      method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="categoryID"
+                                                           value="{{ category.categoryID }}">
+                                                    <input type="hidden" name="gameID" value="{{ game.gameID }}">
+                                                    <button type="submit" class="btn btn-danger">
+                                                        Verwijderen
+                                                        <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                             class="bi bi-trash-fill"
+                                                             fill="currentColor"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd"
+                                                                  d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Add New Category -->
+    <div class="row">
+        <div class="col-md-12">
+            {% if game.published == False %}
+                <form action="{% url 'game:adminpanelCategoriesAdd' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="gameID" value="{{ game.gameID }}">
+                    <div class="form-group">
+                        <label for="newCategoryName">Nieuwe categorie naam</label>
+                        <input type="text" class="form-control" id="newCategoryName" name="newCategoryName">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Voeg een nieuwe categorie toe
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </button>
+                </form>
+
+            {% endif %}
+        </div>
+    </div>
+{% endblock body_content %}
+
+{% block baseAdminpanel_javascript %}
+
+    <script>
+        $(document).ready(function () {
+            $("#id_message").bind('input propertychange', function () {
+                $("#result").html("<div class=\"d-flex justify-content-center\"><div class=\"spinner-border text-primary\" role=\"status\"><span class=\"sr-only\">Loading...</span></div></div>");
+                runMarkdownLatexAtDest($("#result"), $("#id_message").val());
+            });
+        });
+
+        $(document).ready(function () {
+            liveTextUpdate($("#id_gameName"), $("#gameNameHeader"), "{{ game.gameName }}")
+        });
+    </script>
+
+{% endblock baseAdminpanel_javascript %}

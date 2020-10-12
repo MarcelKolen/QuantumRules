@@ -1,0 +1,12 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block body_content %}
+    <div class="jumbotron">
+        <h1 class="display-3">Uitgelogd</h1>
+        <p class="lead">U bent succesvol <b>uitgelogd.</b></p>
+        <hr class="my-4">
+        <a class="btn btn-primary" href="{% url 'login' %}" role="button">Opnieuw inloggen</a>
+    </div>
+{% endblock body_content %}

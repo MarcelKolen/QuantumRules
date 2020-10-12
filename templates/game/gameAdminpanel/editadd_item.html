@@ -1,0 +1,35 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% block body_content %}
+    {% block item_header %}
+        <h1 id="itemNameHeader">
+            {% block header_name %}
+            {% endblock header_name %}
+        </h1>
+        <hr class="my-4">
+    {% endblock item_header %}
+
+    {% block edit_item_form %}
+        <form method="post">
+            {% csrf_token %}
+
+            {% block item_content %}
+            {% endblock item_content %}
+
+        {% if itemID %}
+            <input type="hidden" name="itemID" value="{{ itemID }}">
+        {% endif %}
+
+        {% if typeID %}
+            <input type="hidden" name="typeID" value="{{ typeID }}">
+        {% endif %}
+
+            <button type="submit" class="btn btn-primary">
+                {% block submit_button_content %}
+                    Verstuur!
+                {% endblock submit_button_content %}
+            </button>
+        </form>
+    {% endblock edit_item_form %}
+
+{% endblock body_content %}

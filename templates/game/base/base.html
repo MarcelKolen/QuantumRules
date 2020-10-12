@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    {% include 'game/base/header.html' %}
+
+    {% load static %}
+    <script src="{% static 'game/base/javascript/base_javascript_utilities.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'game/base/css/base.css' %}">
+
+    <title>{% block title %}QuantumRules!{% endblock title %}</title>
+</head>
+
+<body>
+
+<!-- page navigation header -->
+<header>
+    {% block navbar %}
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark" style="background-color: #2f702a;">
+            {% block navbar_brand_link %}<a class="navbar-brand"
+                                            href="{% url 'game:index' %}">QuantumRules!</a>{% endblock navbar_brand_link %}
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    {% block navbar_navitems %}
+                    {% endblock navbar_navitems %}
+                </ul>
+
+                <div class="my-2 my-lg-0">
+                    <ul class="navbar-nav mr-auto">
+                        {% block navbar_auth %}
+                            {% if user.is_authenticated %}
+                                <li>
+                                    <span class="navbar-text">
+                                        Hallo {{ user.username }}!
+                                    </span>
+                                </li>
+                            {% endif %}
+                            {% block navbar_auth_panelswitch %}
+                                {% if user.is_staff %}
+                                    <li>
+                                        <a class="nav-link" href="{% url 'game:adminpanel' %}">Ga naar adminpanel
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                 class="bi bi-bar-chart-steps"
+                                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd"
+                                                      d="M.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 .5 0z"/>
+                                                <rect width="5" height="2" x="2" y="1" rx=".5"/>
+                                                <rect width="8" height="2" x="4" y="5" rx=".5"/>
+                                                <path d="M6 9.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1-.5-.5v-1zm2 4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1z"/>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endblock navbar_auth_panelswitch %}
+                            <li class="nav-item">
+                                {% if user.is_authenticated %}
+                                    <b><a class="nav-link" href="{% url 'logout' %}">Uitloggen</a></b>
+                                {% else %}
+                                    <b><a class="nav-link" href="{% url 'login' %}">Inloggen</a></b>
+                                {% endif %}
+                            </li>
+                        {% endblock navbar_auth %}
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    {% endblock navbar %}
+</header>
+<!-- / page navigation header -->
+
+<!-- page body -->
+<div class="container" style="padding-top: 100px; ">
+
+    <!-- page (error) message -->
+    <div class="container" id="errorMessage" style="margin-top: 10px; margin-bottom: 10px;">
+    </div>
+    <!-- / page (error) message -->
+
+    <!-- page main content -->
+    <main>
+        {% block body_content %}
+            <!-- Empty block -->
+            <div class="jumbotron">
+                <h1 class="display-4">Deze pagina is nog helemaal leeg!</h1>
+                <hr class="my-4">
+                <p><b>{% verbatim %}{% extend %}{% endverbatim %}</b> deze pagina door de verschillende blokken te
+                    gebruiken! </p>
+                <p>
+                    Enkele voorbeeld blokken zijn:<br/>
+                <ul>
+                    <li><b>{% verbatim %}{% block body_content %}{% endverbatim %}</b></li>
+                </ul>
+                </p>
+            </div>
+        {% endblock %}
+    </main>
+    <!-- / page main content -->
+
+</div>
+<!-- / page body -->
+
+<!-- page footer -->
+<footer>
+    {% block footer_content %}
+        <div class="footer container-fluid" style="background-color: #245221; color: #ffffff">
+            <div class="container" style="padding-top: 10px; padding-bottom: 10px;">
+                <div class="row">
+                    <div class="col-6 text-center"><small style="font-size: 8px;" id="QRFooter">© QuantumRules!</small></div>
+                    <div class="col-6 text-center"><small style="font-size: 8px;">Created by Marcel Kolenbrander 2020</small></div>
+                </div>
+            </div>
+        </div>
+    {% endblock footer_content %}
+</footer>
+<!-- / page footer -->
+
+</body>
+
+{% include 'game/base/popUpModals/message_modal.html' %}
+
+</html>
+
+<script>
+    const generalMessageModal = $("#general-message");
+    const generalMessageTitle = $("#general-message-title");
+    const generalMessageBody = $("#general-message-body");
+    const generalMessageFooter = $("#general-message-footer");
+    const generalMessageButton = $("#general-message-primary-button");
+
+    const generalMessageModalStatic = $("#general-message-static");
+    const generalMessageTitleStatic = $("#general-message-title-static");
+    const generalMessageBodyStatic = $("#general-message-body-static");
+    const generalMessageFooterStatic = $("#general-message-footer-static");
+    const generalMessageButtonStatic = $("#general-message-primary-button-static");
+
+    /* Modal popup */
+    function popupMessage(body = "Dit is een aankondiging", title = "Aankondiging!", buttonText = "Sluiten", bodyIsMarkdown = true, isStatic = false, buttonTimeout = 0, buttonFunc) {
+        var modal;
+        var modalTitle;
+        var modalBody;
+        var modalButton;
+
+        if (isStatic === false) {
+            modal = generalMessageModal;
+            modalTitle = generalMessageTitle;
+            modalBody = generalMessageBody;
+            modalButton = generalMessageButton;
+        } else {
+            modal = generalMessageModalStatic;
+            modalTitle = generalMessageTitleStatic;
+            modalBody = generalMessageBodyStatic;
+            modalButton = generalMessageButtonStatic;
+        }
+
+        $(modalTitle).text(title);
+        if (bodyIsMarkdown === true)
+            runMarkdownLatexAtDest(modalBody, body);
+        else
+            modalBody.html(body);
+        $(modalButton).text(buttonText);
+
+        if (buttonTimeout > 0)
+            timeoutSubmitButton(modalButton, buttonTimeout, "...");
+
+        if (typeof buttonFunc !== "undefined") {
+            modalButton.click(buttonFunc);
+        }
+
+        $(modal).modal();
+    }
+
+    /* Head of the page message */
+
+
+    /* Footer copyright year */
+    $(document).ready(function () {
+        $("#QRFooter").text("© QuantumRules! " + new Date().getFullYear());
+    });
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}errorMessage("error", "Fout:", "{{ message|safe }}", $("#errorMessage"));
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}errorMessage("warning", "Let op:", "{{ message|safe }}", $("#errorMessage"));
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}errorMessage("success", "Succes:", "{{ message|safe }}", $("#errorMessage"));
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}errorMessage("info", "Info:", "{{ message|safe }}", $("#errorMessage"));
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}errorMessage("debug", "DEBUG:", "{{ message|safe }}", $("#errorMessage"));{% endif %}
+        {% endfor %}
+    {% endif %}
+</script>
+
+{% block base_javascript %}
+{% endblock base_javascript %}
+

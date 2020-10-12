@@ -1,0 +1,67 @@
+{% extends 'game/gameAdminpanel/base/base.html' %}
+
+{% block body_content %}
+    {% block item_header %}
+        <h1>
+        {% block header_name %}
+        {% endblock header_name %}
+        </h1>
+        <hr class="my-4">
+    {% endblock item_header %}
+
+    {% block existing_items_form %}
+        <h1>Bestaande item kiezen</h1>
+        <form action="{% url 'game:adminpanelCategoriesAddExistingItem' %}" method="post">
+            {% csrf_token %}
+
+            {% block existing_items_select %}
+                <div class="form-group">
+                    <label for="itemSelect">Selecteer item van huidige type:</label>
+                    <select class="form-control" id="itemSelect" name="itemID">
+                        {% for item in all_module_items %}
+                            <option value="{{ item.ID }}">{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endblock existing_items_select %}
+
+            <input type="hidden" name="gameID" value="{{ gameID }}">
+            <input type="hidden" name="categoryID" value="{{ categoryID }}">
+            <input type="hidden" name="typeID" value="{{ typeID }}">
+
+            <button type="submit" class="btn btn-primary">
+                Item toevoegen
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+            </button>
+        </form>
+    {% endblock existing_items_form %}
+
+    {% block add_new_item_form %}
+        <hr class="my-4">
+        <h1>Nieuwe item aanmaken</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            {% block new_item_content %}
+            {% endblock new_item_content %}
+
+            <input type="hidden" name="gameID" value="{{ gameID }}">
+            <input type="hidden" name="categoryID" value="{{ categoryID }}">
+            <input type="hidden" name="typeID" value="{{ typeID }}">
+
+            <button type="submit" class="btn btn-primary">
+                Item toevoegen
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+            </button>
+        </form>
+    {% endblock add_new_item_form %}
+
+{% endblock body_content %}

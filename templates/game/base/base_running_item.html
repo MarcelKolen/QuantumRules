@@ -1,0 +1,199 @@
+{% extends 'game/base/base_running_game.html' %}
+{% if game %}
+    {% block navbar_brand_link %}
+        <a class="navbar-brand" href="{% url 'game:gameIndex' game.gameID %}">QuantumRules!</a>
+    {% endblock navbar_brand_link %}
+{% endif %}
+
+{% block game_content %}
+
+    {% block item_content %}
+        {% if item %}
+
+            {% block item_content_title %}
+                <h1><i>{{ item.module_item_content }}</i></h1>
+            {% endblock item_content_title %}
+
+            {% block item_content_body %}
+                {% block item_content_body_content %}
+                    {% if item.module_item_content.content|length > 0 %}
+                        <hr class="my-4">
+                        <div id="out">{{ item.module_item_content.content }}</div>
+                    {% endif %}
+                {% endblock item_content_body_content %}
+
+                {% block item_content_body_video %}
+                    {% if item.module_item_content.video_link|length > 0 %}
+                        <hr class="my-4">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe src="{{ item.module_item_content.video_link }}"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                        </div>
+                    {% endif %}
+                {% endblock item_content_body_video %}
+
+                {% if item.module_item_content.has_hint == True %}
+                    {% block item_content_body_hint %}
+                        <hr class="my-4">
+                        {% if item.gameItemStateGivenWrongNInput > 0 %}
+                            <div id="hint">
+                                <div id="hint1" style="color: red">Hint:</div>
+                                <div id="hint2" style="color: red">{{ item.module_item_content.hint_content }}</div>
+                                <hr class="my-4">
+                            </div>
+                        {% else %}
+                            <div id="hint" hidden>
+                                <div id="hint1" style="color: red">Hint:</div>
+                                <div id="hint2" style="color: red"></div>
+                                <hr class="my-4">
+                            </div>
+                        {% endif %}
+                    {% endblock item_content_body_hint %}
+                {% else %}
+                    <hr class="my-4">
+                {% endif %}
+            {% endblock item_content_body %}
+
+            {% block item_content_post %}
+                {% if item.gameItemContinueByGM %}
+                    <p>Ga naar de spelleider om je antwoord goed te laten keuren! <small><i>Geef de volgende ID door:
+                        #{{ item.gameItemLinkID }}</i></small></p>
+                {% else %}
+                    <form id="postForm" action="{% url 'game:modulePost' game.gameID item.gameItemLinkID %}"
+                          method="post">
+                        {% csrf_token %}
+                        {% block form_content %}
+                        {% endblock form_content %}
+                        <input type="hidden" name="gameID" value="{{ game.gameID }}">
+                        <input type="hidden" name="itemID" value="{{ item.gameItemLinkID }}">
+                        <button id="moduleFormSubmitButton" type="submit" class="btn btn-primary">doorgaan</button>
+                    </form>
+                {% endif %}
+            {% endblock item_content_post %}
+
+        {% endif %}
+    {% endblock item_content %}
+
+{% endblock game_content %}
+
+{% block baseRunningGame_javascript %}
+
+    {% block baseRunningItem_contentRender %}
+        <script>
+            $(document).ready(function () {
+                runMarkdownLatexAtDest($("#out"), $("#out").html());
+                {% if item.gameItemStateGivenWrongNInput > 0 %}
+                    runMarkdownLatexAtDest($("#hint2"), $("#hint2").html());
+                {% endif %}
+            });
+        </script>
+    {% endblock baseRunningItem_contentRender %}
+
+    {% block baseRunningItem_socket %}
+
+        <script>
+            $(document).ready(function () {
+                var endpoint = wsStart + '/item/{{ item.gameItemLinkID }}/';
+
+                const itemSocket = new ReconnectingWebSocket(endpoint, null, {reconnectInterval: 3000, maxReconnectAttempts: 10});
+
+                {% block baseRunningItem_socket_formprocessing %}
+                    var postForm = $("#postForm");
+
+                    /* Prevents default of a formsubmit (an HTTP POST request) and sends it as socket data instead. */
+                    function submitAsWebsocket(submitEvent) {
+                        submitEvent.preventDefault();
+
+                        timeoutSubmitButton("#moduleFormSubmitButton", 3000, "Versturen...");
+
+                        const post_data = {
+                            'event': 'post',
+                            'data': postForm.serializeArray(),
+                        };
+
+                        itemSocket.send(JSON.stringify(post_data));
+                    }
+                {% endblock baseRunningItem_socket_formprocessing %}
+
+                itemSocket.onmessage = function (event) {
+                    {% block baseRunningItem_socket_onmessage %}
+
+                        var parsedData = JSON.parse(event.data);
+
+                        if (parsedData.event === "itemComplete") {
+                            {% block baseRunningItem_socket_onmessage_itemComplete %}
+                            /* Catch data and populate a modal for a correct answer popup. Note: The button function is overloaded and it now forces a page reload! */
+                            popupMessage("Dit onderdeel is goed beantwoord!", "Dit onderdeel is beantwoord!", "Doorgaan naar volgend onderdeel", false, true, 0, function () {
+                                location.reload();
+                            });
+                            {% endblock baseRunningItem_socket_onmessage_itemComplete %}
+                        } else if (parsedData.event === "itemCompleteByGM") {
+                            /* Catch data and populate a modal for a accepted by GM popup. Note: The button function is overloaded and it now forces a page reload! */
+                            popupMessage("Dit onderdeel is goedgekeurd door de gamemaster voor <b>" + parsedData.score + "</b> van de punten!", "Dit onderdeel is goedgekeurd!", "Doorgaan naar volgend onderdeel", false, true, 0, function () {
+                                location.reload();
+                            });
+                        } else if (parsedData.event === "wrong") {
+                            /* Catch data and populate a modal for a wrong answer popup. */
+                            if (parsedData.reload === "True") {
+                                /* If the last chance for a correct answer has passed, the popup should redirect the user to the main page */
+                                popupMessage("Het gegeven antwoord is fout!", "Verkeerd antwoord!", "Doorgaan", false, true, 0, function () {
+                                    location.reload();
+                                });
+                            } else {
+                                popupMessage("Het gegeven antwoord is fout! Probeer het opnieuw", "Verkeerd antwoord!", "Sluiten", false);
+                            }
+                        } else if (parsedData.event === "hint") {
+                            /* Populate the data in the hint field. */
+                            $("#hint").removeAttr("hidden");
+                            runMarkdownLatexAtDest($("#hint2"), parsedData.hint_data);
+                        } else if (parsedData.event === "force_reload") {
+                            /* Forcefully reload the client page. This only happens in case a client is found lagging behind */
+                            location.reload();
+                        } else if (parsedData.event === "running_error") {
+                            /* Item did not pass the rules and should therefor reload (possibly to homepage) */
+                            popupMessage("Dit onderdeel is even niet beschikbaar, controlleer of het niet al beëindigd is!", "Let op!", "Doorgaan", false, true, 0, function () {
+                                location.reload();
+                            });
+                        } else if (parsedData.event === "input_error") {
+                            /* The given input could not be passed through to the input handler, fields might be tempered with */
+                            popupMessage("Er ging iets mis met het versturen van je antwoord, probeer het later opnieuw!", "Let op!", "Doorgaan", false, true, 0, function () {
+                                location.reload();
+                            });
+                        }
+
+                    {% endblock baseRunningItem_socket_onmessage %}
+                };
+
+                itemSocket.onopen = function (event) {
+                    {% block baseRunningItem_socket_onopen %}
+
+                        socket_connection_succes();
+                        console.log("Open item_socket", event);
+                        postForm.bind("submit", submitAsWebsocket);
+
+                    {% endblock baseRunningItem_socket_onopen %}
+                };
+
+                itemSocket.onerror = function (event) {
+                    {% block baseRunningItem_socket_onerror %}
+
+                        socket_connection_error($("#errorMessage"));
+                        console.log("Error", event);
+
+                    {% endblock baseRunningItem_socket_onerror %}
+                };
+
+                itemSocket.onclose = function (event) {
+                    {% block baseRunningItem_socket_onclose %}
+
+                        postForm.unbind("submit", submitAsWebsocket);
+
+                    {% endblock baseRunningItem_socket_onclose %}
+                };
+            });
+        </script>
+
+    {% endblock baseRunningItem_socket %}
+
+{% endblock baseRunningGame_javascript %}

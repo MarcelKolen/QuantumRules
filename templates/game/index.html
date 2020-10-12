@@ -1,0 +1,75 @@
+{% extends 'game/base/base.html' %}
+{% block body_content %}
+    <ul>
+        <h1 class="display-4">Welkom in Quantum Rules!</h1>
+        {% if activeGameList %}
+            <form action="{% url 'game:tag' %}" method="post">
+                {% csrf_token %}
+                <h3>Zoek een spel met een game-tag</h3>
+                <div class="form-group">
+                    <label for="gameTag">Game Tag</label>
+                    <input type="text" class="form-control" id="gameTag" name="gameTag" aria-describedby="tag-help"
+                           placeholder="Voer een gametag in!">
+                    <small id="tag-help" class="form-text text-muted">Vraag aan een van de gameleiders een
+                        gametag</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+            <hr class="my-4">
+            <h3>Of speel een van de onderstaande spellen</h3>
+
+            {% if activeGameList|length > 1 %}
+                <b>Er zijn op dit moment {{ activeGameList | length }} spellen.</b>
+            {% else %}
+                <b>Er is op dit moment 1 spel.</b>
+            {% endif %}
+
+            <br>
+
+            <ul>
+                {% for activeGame in activeGameList %}
+                    <li><b>Game {{ forloop.counter }}:</b> <a
+                            href="{% url 'game:gameIndex' activeGame.gameID %}">{{ activeGame }}</a>
+                        {% if not activeGame.published %}
+                            <br>
+                            <b style="color: red;">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-exclamation-circle-fill"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                </svg>
+                                Let op, dit spel is <i>niet</i> gepubliceerd en dus ook niet toegankelijk voor anderen!
+                            </b>
+                        {% endif %}
+                        {% if activeGame.accessThroughTag %}
+                            <br>
+                            <b style="color: red;">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-exclamation-circle-fill"
+                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                </svg>
+                                Let op, dit spel is normaal gesproken alleen te vinden via een <i>gametag</i>!
+                            </b>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+            <form action="{% url 'game:tag' %}" method="post">
+                {% csrf_token %}
+                <h3>Zoek een spel met een game-tag</h3>
+                <div class="form-group">
+                    <label for="gameTag">Game Tag</label>
+                    <input type="text" class="form-control" id="gameTag" name="gameTag" aria-describedby="tag-help"
+                           placeholder="Voer een gametag in!">
+                    <small id="tag-help" class="form-text text-muted">Vraag aan een van de gameleiders een
+                        gametag</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        {% endif %}
+    </ul>
+{% endblock body_content %}

@@ -1,0 +1,107 @@
+{% extends 'game/base/base_running_game.html' %}
+
+{% block game_content %}
+    {% if game and game.generalText|length > 0 %}
+        <div id="openingText">{{ game.generalText }}</div>
+        <hr class="my-4">
+    {% endif %}
+
+    {% if items and categories %}
+
+        {% for category in categories %}
+            <h1>
+                <i>
+                    {% if category.chained == True %}
+                        <a href="{% url 'game:renderItem' game.gameID category.categoryID 'cat' %}">{{ category }} <span
+                                id="categoryStatus{{ category.categoryID }}">{% if category.is_completed %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd"
+                                                                          d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/></svg>{% endif %}</span></a>
+                    {% elif category.chained == False %}
+                        {{ category }}<span id="categoryStatus{{ category.categoryID }}">{% if category.is_completed %}
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd"
+                                                                      d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/></svg>{% endif %}</span>
+                    {% endif %}
+                </i>
+            </h1>
+            {% if category.chained is True %}
+                <ol>
+            {% else %}
+                <ul>
+            {% endif %}
+        {% for item in items %}
+            {% if category.categoryID == item.category.categoryID %}
+                {% if category.chained is True and item.hidden is True %}
+                {% else %}
+                    <li>
+                        <a href="
+                                {% if category.chained == True %}{% url 'game:renderItem' game.gameID category.categoryID 'cat' %}{% elif category.chained == False %}{% url 'game:renderItem' game.gameID item.gameItemLinkID 'item' %}{% endif %}">
+                            {{ item }}
+                            <span id="itemStatus{{ item.gameItemLinkID }}">
+                        {% if item.gameItemStateCompleted == True %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+                            </svg>
+                        {% elif item.gameItemStateVisited == True %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-eye" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
+                                <path fill-rule="evenodd"
+                                      d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                            </svg>
+                        {% else %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        {% endif %}
+                        </span>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% if category.chained is True %}
+            </ol>
+        {% else %}
+            </ul>
+        {% endif %}
+        {% endfor %}
+
+    {% else %}
+        <h1>Er zijn geen vragen op dit moment :(</h1>
+    {% endif %}
+
+{% endblock game_content %}
+
+{% block baseRunningGame_javascript %}
+    <script>
+        {% if game and game.generalText != None %}
+            runMarkdownLatexAtDest($("#openingText"), $("#openingText").text());
+        {% endif %}
+    </script>
+{% endblock baseRunningGame_javascript %}
+
+<script>
+    {% block baseRunningGame_socket_onmessage %}
+        {{ block.super }}
+        else if (parsedData.event === "updateItem") {
+        itemElement = $("#itemStatus" + parsedData.itemID);
+
+        if (parsedData.status === "notVisited") {
+            itemElement.html("<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-x\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" d=\"M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z\"/>");
+        } else if (parsedData.status === "visited") {
+            itemElement.html("<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-eye\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" d=\"M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z\"/><path fill-rule=\"evenodd\" d=\"M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z\"/></svg>");
+        } else if (parsedData.status === "completed") {
+            itemElement.html("<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-check\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" d=\"M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z\"/></svg>");
+        }
+    } else if (parsedData.event === "categoryComplete") {
+        $("#categoryStatus" + parsedData.categoryID).html("<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-check\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" d=\"M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z\"/></svg>");
+    }
+    {% endblock baseRunningGame_socket_onmessage %}
+</script>
