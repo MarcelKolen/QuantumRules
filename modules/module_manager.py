@@ -2,11 +2,13 @@ class ItemTypes:
     TEXT_ITEM = 'TI'
     MULTIPLE_CHOICE = 'MC'
     MULTIPLE_CHOICE_MULTIPLE_ANSWER = 'MA'
+    QUANTUM_TIC_TAC_TOE = 'QT'
 
     ITEM_TYPE_CHOICES = [
         (TEXT_ITEM, 'Text Item'),
         (MULTIPLE_CHOICE, 'Multiple Choice'),
         (MULTIPLE_CHOICE_MULTIPLE_ANSWER, 'Multiple Choice multiple answer'),
+        (QUANTUM_TIC_TAC_TOE, 'Quantum Tic Tac Toe'),
     ]
 
 
@@ -44,6 +46,15 @@ def select_module(item_type, as_model=False, as_admin=False):
                 import modules.views.multipleChoiceMultipleAnswer.multiple_choice_multiple_answer_admin as module
             else:
                 import modules.views.multipleChoiceMultipleAnswer.multiple_choice_multiple_answer as module
+
+    elif item_type == ItemTypes.QUANTUM_TIC_TAC_TOE:
+        if as_model is True:
+            from modules.models import QuantumTicTacToe as module
+        else:
+            if as_admin is True:
+                import modules.views.quantumTicTacToe.quantum_tic_tac_toe_admin as module
+            else:
+                import modules.views.quantumTicTacToe.quantum_tic_tac_toe as module
 
     else:
         return False, None

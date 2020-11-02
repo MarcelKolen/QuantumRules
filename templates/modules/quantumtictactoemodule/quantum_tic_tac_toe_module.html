@@ -1,0 +1,10 @@
+{% extends 'game/base/base_running_item.html' %}
+
+<script>
+    {% block baseRunningItem_socket_onmessage_itemComplete %}
+        /* Catch data and populate a modal for a correct answer popup. Note: The button function is overloaded and it now forces a page reload! */
+        popupMessage("Dit onderdeel is afgesloten!", "Dit onderdeel is afgesloten!", "Doorgaan naar volgend onderdeel", false, true, 0, function () {
+            location.reload();
+        });
+    {% endblock baseRunningItem_socket_onmessage_itemComplete %}
+</script>
