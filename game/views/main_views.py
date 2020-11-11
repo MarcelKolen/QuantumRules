@@ -290,7 +290,17 @@ def module_item_post(request, gameID, itemID):
                 # The input to the input handler is the POST data in a request. The post data is processed into a
                 # dictionary per standard. The request data must also be send to leave the option open for
                 # raw input processing.
-                item_satisfied = item.module_item_handlers().handle_input(dict(request.POST), item.game.gameID, item.gameItemLinkID, request, None)
+
+                # Because the POST data from request gets put in as a dictionary of lists, and the system only expects
+                # a list when an input contains more than 1 elements, we have to convert the input back to strings
+                # except for when a list makes sense.
+                post_input = dict(request.POST)
+
+                for key, value in post_input.items():
+                    if len(value) == 1:
+                        post_input[key] = value[0]
+
+                item_satisfied = item.module_item_handlers().handle_input(post_input, item.game.gameID, item.gameItemLinkID, request, None)
             else:
                 messages.add_message(request, messages.ERROR,
                                      'Er is een fout opgetreden bij het versturen van een antwoord!')
