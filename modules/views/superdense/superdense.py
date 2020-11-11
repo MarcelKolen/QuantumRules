@@ -1,6 +1,5 @@
 from game.models import GameItemLink
 from game.core_control_methods import handle_item_state
-from modules.models import MultipleChoiceChoices
 from modules.base import basic_module_render
 
 
@@ -12,7 +11,7 @@ def render_module(request, gameID, itemID):
     Renders multiple choice item
     """
 
-    return basic_module_render(request, gameID, itemID, 'modules/multipleChoiceModule/multiple_choice.html', 'Multiple Choice')
+    return basic_module_render(request, gameID, itemID, 'modules/superdenseModule/superdense.html', 'Superdense')
 
 
 # !!! Mandatory Method !!!
@@ -33,20 +32,4 @@ def handle_input(input, gameID, itemID, raw_request_data=None, raw_socket_data=N
     One answer can be given by the user, this is stored in 'mcAnswer'. There can be multiple correct answers, but only
     one needs correct answer needs to be given.
     """
-    if 'mcAnswer' in input:
-        # Fetch item
-        try:
-            item = GameItemLink.objects.get(gameItemLinkID=itemID)
-        except GameItemLink.DoesNotExist:
-            return False
-
-        # Fetch all possible answers
-        all_possible_answers = MultipleChoiceChoices.objects.filter(
-            related_question=item.module_item_content(), correct_answer=True)
-
-        # Check to see if the user input (answer ID) is in the set of all the possible answers
-        if all_possible_answers.filter(ID=(input['mcAnswer'])[0]).exists():
-            handle_item_state.item_satisfied(itemID)
-            return True
-        handle_item_state.item_not_satisfied(itemID)
-    return False
+    

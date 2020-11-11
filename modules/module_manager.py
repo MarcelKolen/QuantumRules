@@ -52,9 +52,9 @@ def select_module(item_type, as_model=False, as_admin=False):
             from modules.models import superdense as module
         else:
             if as_admin is True:
-                import modules.views.superdense.super_dense_admin as module
+                import modules.views.superdense.superdense_admin as module
             else:
-                import modules.views.superdense.super_dense as module
+                import modules.views.superdense.superdense as module
 
     else:
         return False, None
