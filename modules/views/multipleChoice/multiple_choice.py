@@ -45,7 +45,7 @@ def handle_input(input, gameID, itemID, raw_request_data=None, raw_socket_data=N
             related_question=item.module_item_content(), correct_answer=True)
 
         # Check to see if the user input (answer ID) is in the set of all the possible answers
-        if all_possible_answers.filter(ID=(input['mcAnswer'])[0]).exists():
+        if all_possible_answers.filter(ID=input['mcAnswer']).exists():
             handle_item_state.item_satisfied(itemID)
             return True
         handle_item_state.item_not_satisfied(itemID)
