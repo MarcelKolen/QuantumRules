@@ -8,3 +8,49 @@
         });
     {% endblock baseRunningItem_socket_onmessage_itemComplete %}
 </script>
+
+{% block game_content %}
+    <div class="row">
+        <div class="text-center col-sm-7">
+            <h3>Team ABCD (X) is aan de beurt</h3>
+
+            <div>
+                <div class="container">
+                    <div class="row no-gutters">
+                        <div class="col-sm">
+                            <div class="border">a</div>
+                            <div class="border">b</div>
+                            <div class="border">c</div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="border">d</div>
+                            <div class="border">e</div>
+                            <div class="border">f</div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="border">g</div>
+                            <div class="border">h</div>
+                            <div class="border">i</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-5">
+            <div class="border">Hier komt een korte uitleg over het spel, met de mogelijkheden die op dit moment beschikbaar zijn voor de speler. </div>
+            <div class="border">
+                <p>Er is wel/geen meting mogelijk.</p>
+                <p>Mogelijke metingen in geselecteerde vak:</p>
+                    <div class="radiolist">
+                        <label class="radio-inline"><input type="radio" name="optradio" checked>Keuze 1</label>
+                        <label class="radio-inline"><input type="radio" name="optradio">Keuze 2</label>
+                    </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary">Start meting</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock game_content %}
