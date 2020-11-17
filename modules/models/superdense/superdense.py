@@ -19,3 +19,8 @@ class SuperDense(models.Model):
     """
     #later
     
+    content = models.TextField(null=True, blank=True)
+    
+    def __str__(self):
+        return self.name
+    

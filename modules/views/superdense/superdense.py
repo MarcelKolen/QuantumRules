@@ -32,4 +32,5 @@ def handle_input(input, gameID, itemID, raw_request_data=None, raw_socket_data=N
     One answer can be given by the user, this is stored in 'mcAnswer'. There can be multiple correct answers, but only
     one needs correct answer needs to be given.
     """
-    
+    handle_item_state.item_satisfied(itemID)
+    return True

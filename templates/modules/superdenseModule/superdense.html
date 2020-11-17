@@ -1,20 +1,10 @@
 {% extends 'game/base/base_running_item.html' %}
 
-{% block form_content %}
-    {% for choice in item.module_item_content.related_choices_content %}
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="mcAnswer" id="exampleRadios1"
-                   value="{{ choice.ID }}" required>
-            <label class="form-check-label" for="exampleRadios1" id="choice_option{{ choice.ID }}">{{ choice.content }}</label>
-        </div>
-    {% endfor %}
-{% endblock %}
-
-{% block baseRunningItem_contentRender %}
-    {{ block.super }}
-    <script>
-    {% for choice in item.module_item_content.related_choices_content %}
-        runMarkdownLatexAtDest($("#choice_option{{ choice.ID }}"), $("#choice_option{{ choice.ID }}").html());
-    {% endfor %}
-    </script>
-{% endblock baseRunningItem_contentRender %}
+<script>
+    {% block baseRunningItem_socket_onmessage_itemComplete %}
+        /* Catch data and populate a modal for a correct answer popup. Note: The button function is overloaded and it now forces a page reload! */
+        popupMessage("Dit onderdeel is afgesloten!", "Dit onderdeel is afgesloten!", "Doorgaan naar volgend onderdeel", false, true, 0, function () {
+            location.reload();
+        });
+    {% endblock baseRunningItem_socket_onmessage_itemComplete %}
+</script>
