@@ -58,7 +58,7 @@ def render_edit(request, typeID, itemID):
        superdense_item = SuperDense.objects.get(ID=itemID)
     except SuperDense.DoesNotExist:
         messages.add_message(request, messages.ERROR,
-                             'Er is een fout opgetreden aanpassen van een Multiple Choice Item!')
+                             'Er is een fout opgetreden aanpassen van een Super Dense Item!')
         messages.add_message(request, messages.DEBUG,
                              f'The exception <i>\'TextItem.DoesNotExist\'</i> occurred on id {itemID}')
         return redirect('game:adminpanelModules')
@@ -100,10 +100,10 @@ def edit(request, itemID):
 
     # Populate form with postdata for formvalidation and saving
     try:
-        form = SuperDenseForm(request.POST, instance=TextItem.objects.get(ID=itemID))
+        form = SuperDenseForm(request.POST, instance=SuperDense.objects.get(ID=itemID))
     except SuperDense.DoesNotExist:
         messages.add_message(request, messages.ERROR,
-                             'Er is een fout opgetreden aanpassen van een Text Item!')
+                             'Er is een fout opgetreden aanpassen van een Superdense Item!')
         messages.add_message(request, messages.DEBUG,
                              f'The exception <i>\'TextItem.DoesNotExist\'</i> occurred on id {itemID}')
         return redirect('game:adminpanelModules')
@@ -126,7 +126,7 @@ def delete(request, itemID):
         superdense_item = SuperDense.objects.get(ID=itemID)
     except SuperDense.DoesNotExist:
         messages.add_message(request, messages.ERROR,
-                             'Er is een fout opgetreden aanpassen van een Text Item!')
+                             'Er is een fout opgetreden aanpassen van een Superdense Item!')
         messages.add_message(request, messages.DEBUG,
                              f'The exception <i>\'TextItem.DoesNotExist\'</i> occurred on id {itemID}')
         return redirect('game:adminpanelModules')
