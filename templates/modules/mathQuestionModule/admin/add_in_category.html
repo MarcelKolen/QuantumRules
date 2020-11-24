@@ -1,0 +1,26 @@
+{% extends 'game/gameAdminpanel/category_add_item.html' %}
+
+{% block header_name %}
+    Math Question
+{% endblock header_name %}
+
+{% block new_item_content %}
+    {% load crispy_forms_tags %}
+    {{ form|crispy }}
+{% endblock new_item_content %}
+
+{% block baseAdminpanel_javascript %}
+    <script>
+    $(document).ready(function () {
+        if(!$("#id_has_hint").is(":checked"))
+            $("#div_id_hint_content").hide();
+
+        $("#id_has_hint").click(function () {
+            if($(this).is(":checked"))
+                $("#div_id_hint_content").show();
+            else
+                $("#div_id_hint_content").hide();
+        })
+    });
+    </script>
+{% endblock baseAdminpanel_javascript %}

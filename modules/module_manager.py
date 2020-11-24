@@ -1,10 +1,12 @@
 class ItemTypes:
     TEXT_ITEM = 'TI'
+    MATH_QUESTION = 'MQ'
     MULTIPLE_CHOICE = 'MC'
     MULTIPLE_CHOICE_MULTIPLE_ANSWER = 'MA'
 
     ITEM_TYPE_CHOICES = [
         (TEXT_ITEM, 'Text Item'),
+        (MATH_QUESTION, 'Math Question'),
         (MULTIPLE_CHOICE, 'Multiple Choice'),
         (MULTIPLE_CHOICE_MULTIPLE_ANSWER, 'Multiple Choice multiple answer'),
     ]
@@ -26,6 +28,16 @@ def select_module(item_type, as_model=False, as_admin=False):
                 import modules.views.textItem.text_item_admin as module
             else:
                 import modules.views.textItem.text_item as module
+
+    elif item_type == ItemTypes.MATH_QUESTION:
+        if as_model is True:
+            from modules.models import MathQuestion as module
+        else:
+            if as_admin is True:
+                import modules.views.mathQuestion.math_question_admin as module
+            else:
+                import modules.views.mathQuestion.math_question as module
+
 
     elif item_type == ItemTypes.MULTIPLE_CHOICE:
         if as_model is True:
