@@ -20,7 +20,10 @@ class ItemConsumer(AsyncJsonWebsocketConsumer):
         item = await self.get_item_object(itemID)
 
         if item is not None:
-            self.item_socket_room = f"item_socket_room_{item.gameItemLinkID}"
+            if "Quantum Tic Tac Toe" in item.gameItemLinkName: #TODO: Onafhankelijk van naam maken, maar op basis van spelmodule
+                self.item_socket_room = f"item_socket_room_1001" #TODO: Dynamisch, zodat er meerdere QTT-spellen tegelijkertijd kunnen bestaan.
+            else:
+                self.item_socket_room = f"item_socket_room_{item.gameItemLinkID}"
 
             try:
                 await self.channel_layer.group_add(
