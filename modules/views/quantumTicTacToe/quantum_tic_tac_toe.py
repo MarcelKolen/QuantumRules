@@ -7,7 +7,7 @@ def render_module(request, gameID, itemID):
     """
     Called by render_item in game/views/main_views.py
 
-    Renders text item
+    Renders Quantum Tic Tac Toe item
     """
 
     return basic_module_render(request, gameID, itemID,

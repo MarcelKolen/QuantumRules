@@ -9,7 +9,7 @@ from QR2.settings import DEBUG
 # !!! Mandatory Method !!!
 def render_adding_in_category(request, typeID, gameID, categoryID):
     """
-    Render a template which shows both a form to pick an existin item and a form to add a new item
+    Render a template which shows both a form to pick an existing item and a form to add a new item
     """
     template_name = 'modules/quantumTicTacToeModule/admin/add_in_category.html'
 

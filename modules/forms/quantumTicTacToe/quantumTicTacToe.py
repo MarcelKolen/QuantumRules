@@ -12,6 +12,7 @@ class QuantumTicTacToeForm(forms.ModelForm):
             'video_link',
             'has_hint',
             'hint_content',
+            'turn',
         )
 
         labels = {
@@ -19,6 +20,7 @@ class QuantumTicTacToeForm(forms.ModelForm):
             'content': 'Content',
             'has_hint': 'Heeft deze vraag een hint?',
             'hint_content': 'Hint content',
+            'turn': 'Begint O?'
 
         }
 
@@ -26,4 +28,9 @@ class QuantumTicTacToeForm(forms.ModelForm):
             'content': 'Zowel markdown als LaTeX math zijn ondersteund!',
             'hint_content': 'Zowel markdown als LaTeX math zijn ondersteund!',
             'video_link': 'Gebruik een embedded video link!',
+            'turn': 'Ja: O begint. Nee: X begint.',
+        }
+
+        widgets = {
+            'turn': forms.NullBooleanSelect(),
         }
