@@ -11,7 +11,7 @@ def render_module(request, gameID, itemID):
     """
 
     return basic_module_render(request, gameID, itemID,
-                               'modules/quantumtictactoemodule/quantum_tic_tac_toe_module.html',
+                               'modules/quantumTicTacToeModule/quantum_tic_tac_toe_module.html',
                                'Quantum Tic Tac Toe')
 
 # !!! Mandatory Method !!!

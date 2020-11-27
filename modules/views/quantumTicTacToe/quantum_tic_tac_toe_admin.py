@@ -11,7 +11,7 @@ def render_adding_in_category(request, typeID, gameID, categoryID):
     """
     Render a template which shows both a form to pick an existin item and a form to add a new item
     """
-    template_name = 'modules/quantumtictactoemodule/admin/add_in_category.html'
+    template_name = 'modules/quantumTicTacToeModule/admin/add_in_category.html'
 
     # Populate form with POST data for errorhandling
     form = QuantumTicTacToeForm(request.POST or None)
@@ -31,7 +31,7 @@ def render_adding(request, typeID):
     """
     Render a template which shows a form to add a new item
     """
-    template_name = 'modules/quantumtictactoemodule/admin/add.html'
+    template_name = 'modules/quantumTicTacToeModule/admin/add.html'
 
     # Populate form with POST data for errorhandling
     form = QuantumTicTacToeForm(request.POST or None)
@@ -52,22 +52,22 @@ def render_edit(request, typeID, itemID):
     if DEBUG is True:
         messages.set_level(request, messages.DEBUG)
 
-    template_name = 'modules/quantumtictactoemodule/admin/edit.html'
+    template_name = 'modules/quantumTicTacToeModule/admin/edit.html'
 
     try:
-        text_item = QuantumTicTacToe.objects.get(ID=itemID)
+        quantumtictactoe_item = QuantumTicTacToe.objects.get(ID=itemID)
     except QuantumTicTacToe.DoesNotExist:
         messages.add_message(request, messages.ERROR,
-                             'Er is een fout opgetreden aanpassen van een Text Item!')
+                             'Er is een fout opgetreden aanpassen van een Quantum Tic Tac Toe item!')
         messages.add_message(request, messages.DEBUG,
                              f'The exception <i>\'TextItem.DoesNotExist\'</i> occurred on id {itemID}')
         return redirect('game:adminpanelModules')
 
     # Populate form with POST data and database instances
-    form = QuantumTicTacToeForm(request.POST or None, instance=text_item)
+    form = QuantumTicTacToeForm(request.POST or None, instance=quantumtictactoe_item)
 
     context = {
-        'name': text_item.name,
+        'name': quantumtictactoe_item.name,
         'typeID': typeID,
         'itemID': itemID,
         'form': form,
@@ -102,7 +102,7 @@ def edit(request, itemID):
         form = QuantumTicTacToeForm(request.POST, instance=QuantumTicTacToe.objects.get(ID=itemID))
     except QuantumTicTacToe.DoesNotExist:
         messages.add_message(request, messages.ERROR,
-                             'Er is een fout opgetreden aanpassen van een Text Item!')
+                             'Er is een fout opgetreden aanpassen van een Quantum Tic Tac Toe item!')
         messages.add_message(request, messages.DEBUG,
                              f'The exception <i>\'QuantumTicTacToe.DoesNotExist\'</i> occurred on id {itemID}')
         return redirect('game:adminpanelModules')
@@ -122,14 +122,14 @@ def delete(request, itemID):
         messages.set_level(request, messages.DEBUG)
 
     try:
-        text_item = QuantumTicTacToe.objects.get(ID=itemID)
+        quantumtictactoe_item = QuantumTicTacToe.objects.get(ID=itemID)
     except QuantumTicTacToe.DoesNotExist:
         messages.add_message(request, messages.ERROR,
                              'Er is een fout opgetreden aanpassen van een Text Item!')
         messages.add_message(request, messages.DEBUG,
                              f'The exception <i>\'QuantumTicTacToe.DoesNotExist\'</i> occurred on id {itemID}')
         return redirect('game:adminpanelModules')
-    text_item.delete()
+    quantumtictactoe_item.delete()
     return True
 
 
