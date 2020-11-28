@@ -17,8 +17,8 @@ class QuantumTicTacToe(models.Model):
     """
     Custom Fields
     """
-    content = models.TextField(null=True, blank=True)
-    turn = models.BooleanField(null=False, blank=False, default=False)
+    turn = models.BooleanField(default=False)
+    game_board = models.TextField(default=" "*3*3*9*2, max_length=3*3*9*2)
 
     class Meta:
         verbose_name = 'Quantum Tic Tac Toe spel'
