@@ -1,7 +1,7 @@
 from game.models import GameItemLink
 from game.core_control_methods import handle_item_state
 from modules.models import MultipleChoiceChoices
-from modules.base import basic_module_render
+from modules.base import basic_module_render, fetch_module_object
 
 
 # !!! Mandatory Method !!!
@@ -12,7 +12,10 @@ def render_module(request, gameID, itemID):
     Renders multiple choice item
     """
 
-    return basic_module_render(request, gameID, itemID, 'modules/multipleChoiceModule/multiple_choice.html', 'Multiple Choice')
+    # Parameters are the request (straight pass through!), the gameID and itemID (straight pass through!),
+    # optional content which can be custom defined, the template location and the (verbose) module name.
+    return basic_module_render(request, gameID, itemID, {}, 'modules/multipleChoiceModule/multiple_choice.html',
+                               'Multiple Choice')
 
 
 # !!! Mandatory Method !!!
@@ -34,15 +37,15 @@ def handle_input(input, gameID, itemID, raw_request_data=None, raw_socket_data=N
     one needs correct answer needs to be given.
     """
     if 'mcAnswer' in input:
-        # Fetch item
-        try:
-            item = GameItemLink.objects.get(gameItemLinkID=itemID)
-        except GameItemLink.DoesNotExist:
+        # Fetch module object (multiple choice multiple answer in this case) and fetch the
+        # gameItemLink object (optional). The result of this fetch is stored as a tuple in fetch_res. The first
+        # ([0]) element contains the boolean success result (True or False), the second ([1]) element the module
+        # object and the third ([2]) object is the gameItemLink object.
+        if not (fetch_res := fetch_module_object(itemID))[0]:
             return False
 
         # Fetch all possible answers
-        all_possible_answers = MultipleChoiceChoices.objects.filter(
-            related_question=item.module_item_content(), correct_answer=True)
+        all_possible_answers = fetch_res[1].related_choices_content().filter(correct_answer=True)
 
         # Check to see if the user input (answer ID) is in the set of all the possible answers
         if all_possible_answers.filter(ID=input['mcAnswer']).exists():
