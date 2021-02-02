@@ -28,6 +28,9 @@ class Categories:
         except GameItemLink.DoesNotExist:
             return False
 
+        if not items:
+            return True
+
         # Set category first item used for linked item traversal
         category.firstItem = items.first()
         category.save()
@@ -83,19 +86,19 @@ class Categories:
                 gameItems = GameItemLink.objects.filter(game=game, category=category)
             except Game.DoesNotExist:
                 messages.add_message(request, messages.ERROR,
-                                     'Er is een fout opgetreden bij het openen van de categorie pagina. Controleer of het spel nog bestaat.')
+                                     'Er is een fout opgetreden bij het openen van de puzzel pagina. Controleer of het spel nog bestaat.')
                 messages.add_message(request, messages.DEBUG,
                                      f'The exception <i>\'Game.DoesNotExist\'</i> occurred on id <i>\'{gameID}\'</i>')
                 return redirect('game:adminpanelGames')
             except Category.DoesNotExist:
                 messages.add_message(request, messages.ERROR,
-                                     'Er is een fout opgetreden bij het openen van de categorie pagina. Controleer of de categorie nog bestaat.')
+                                     'Er is een fout opgetreden bij het openen van de puzzel pagina. Controleer of de puzzel nog bestaat.')
                 messages.add_message(request, messages.DEBUG,
                                      f'The exception <i>\'Category.DoesNotExist\'</i> occurred on id <i>\'{categoryID}\'</i>')
                 return redirect('game:adminpanelGamesEdit', gameID=gameID)
             except GameItemLink.DoesNotExist:
                 messages.add_message(request, messages.ERROR,
-                                     'Er is een fout opgetreden bij het openen van de categorie pagina. Controleer of de categorie nog bestaat.')
+                                     'Er is een fout opgetreden bij het openen van de puzzel pagina. Controleer of de puzzel nog bestaat.')
                 messages.add_message(request, messages.DEBUG,
                                      f'The exception <i>\'GameItemLink.DoesNotExist\'</i> occurred on gameID <i>\'{gameID}\'</i> and categoryID <i>\'{categoryID}\'</i>')
                 return redirect('game:adminpanelGamesEdit', gameID=gameID)
@@ -155,13 +158,13 @@ class Categories:
                     category = Category.objects.get(categoryID=request.POST['categoryID'])
                 except Game.DoesNotExist:
                     messages.add_message(request, messages.ERROR,
-                                         'Er is een fout opgetreden bij het aanpassen van de gegeven categorie. Controleer of het spel nog bestaat.')
+                                         'Er is een fout opgetreden bij het aanpassen van de gegeven puzzel. Controleer of het spel nog bestaat.')
                     messages.add_message(request, messages.DEBUG,
                                          f'The exception <i>\'Game.DoesNotExist\'</i> occurred on id <i>\'{request.POST["gameID"]}\'</i>')
                     return redirect('game:adminpanelGames')
                 except Category.DoesNotExist:
                     messages.add_message(request, messages.ERROR,
-                                         'Er is een fout opgetreden bij het aanpassen van de gegeven categorie. Controleer of de categorie nog bestaat.')
+                                         'Er is een fout opgetreden bij het aanpassen van de gegeven puzzel. Controleer of de puzzel nog bestaat.')
                     messages.add_message(request, messages.DEBUG,
                                          f'The exception <i>\'Category.DoesNotExist\'</i> occurred on id <i>\'{request.POST["categoryID"]}\'</i>')
                     return redirect('game:adminpanelGamesEdit', gameID=request.POST["gameID"])
@@ -175,7 +178,7 @@ class Categories:
                     gameItems = GameItemLink.objects.filter(game=game, category=category)
                 except GameItemLink.DoesNotExist:
                     messages.add_message(request, messages.ERROR,
-                                         'Er is een fout opgetreden bij het aanpassen van de gegeven categorie. Controleer of de items nog bestaat.')
+                                         'Er is een fout opgetreden bij het aanpassen van de gegeven puzzel. Controleer of de vraag/het spelonderdeel nog bestaat.')
                     messages.add_message(request, messages.DEBUG,
                                          f'The exception <i>\'GameItemLink.DoesNotExist\'</i> occurred on gameID <i>\'{request.POST["gameID"]}\'</i> and categoryID <i>\'{request.POST["categoryID"]}\'</i>')
                     return redirect('game:adminpanelGamesEdit', gameID=request.POST["gameID"])
@@ -222,12 +225,12 @@ class Categories:
 
                 # Category and Items succesfully edited
                 messages.add_message(request, messages.SUCCESS,
-                                     'Categorie en items zijn succesvol aangepast.')
+                                     'Puzzel en spelonderdelen zijn succesvol aangepast.')
                 return redirect('game:adminpanelGamesEditCategory', gameID=game.gameID, categoryID=category.categoryID)
             else:
                 # Problems with ID fetching
                 messages.add_message(request, messages.ERROR,
-                                     'Er ging iets fout tijdens het aanpassen van een categorie/game item!')
+                                     'Er ging iets fout tijdens het aanpassen van een puzzel/spelonderdelen!')
 
                 if 'gameID' not in request.POST:
                     messages.add_message(request, messages.DEBUG,
@@ -252,14 +255,14 @@ class Categories:
                     game = Game.objects.get(gameID=request.POST['gameID'])
                 except Game.DoesNotExist:
                     messages.add_message(request, messages.ERROR,
-                                         'Er is een fout opgetreden bij het toevoegen van een categorie. Controleer of het spel nog bestaat.')
+                                         'Er is een fout opgetreden bij het toevoegen van een puzzel. Controleer of het spel nog bestaat.')
                     messages.add_message(request, messages.DEBUG,
                                          f'The exception <i>\'Game.DoesNotExist\'</i> occurred on id <i>\'{request.POST["gameID"]}\'</i>')
                     return redirect('game:adminpanelGames')
 
                 if game.published is True:
                     messages.add_message(request, messages.ERROR,
-                                         'Categoriën kunnen niet aan een Game toegevoegd worden als deze Game gepubliceerd is.')
+                                         'Puzzels kunnen niet aan een spel toegevoegd worden als een spel gepubliceerd is.')
                     messages.add_message(request, messages.INFO,
                                          'Je moet het spel eerst <i>de-publiceren</i> voordat je aanpassingen kunt maken.')
                     return redirect('game:adminpanelGamesEdit', gameID=request.POST['gameID'])
@@ -274,7 +277,7 @@ class Categories:
             else:
                 # Problems with ID fetching
                 messages.add_message(request, messages.ERROR,
-                                     'Er ging iets fout tijdens het toevoegen van een categorie!')
+                                     'Er ging iets fout tijdens het toevoegen van een puzzel!')
 
                 if 'gameID' not in request.POST:
                     messages.add_message(request, messages.DEBUG,
@@ -303,20 +306,20 @@ class Categories:
                     category.delete()
                 except Game.DoesNotExist:
                     messages.add_message(request, messages.ERROR,
-                                         'Er is een fout opgetreden bij het verwijderen van een categorie. Controleer of het spel nog bestaat.')
+                                         'Er is een fout opgetreden bij het verwijderen van een puzzel. Controleer of het spel nog bestaat.')
                     messages.add_message(request, messages.DEBUG,
                                          f'The exception <i>\'Game.DoesNotExist\'</i> occurred on id <i>\'{request.POST["gameID"]}\'</i>')
                     return redirect('game:adminpanelGames')
                 except Category.DoesNotExist:
                     messages.add_message(request, messages.ERROR,
-                                         'Er is een fout opgetreden bij het verwijderen van een categorie. Controleer of de categorie nog bestaat.')
+                                         'Er is een fout opgetreden bij het verwijderen van een puzzel. Controleer of de puzzel nog bestaat.')
                     messages.add_message(request, messages.DEBUG,
                                          f'The exception <i>\'Category.DoesNotExist\'</i> occurred on id <i>\'{request.POST["categoryID"]}\'</i>')
                     return redirect('game:adminpanelGamesEdit', gameID=request.POST["gameID"])
             else:
                 # Problems with ID fetching
                 messages.add_message(request, messages.ERROR,
-                                     'Er ging iets fout tijdens het verwijderen van een categorie!')
+                                     'Er ging iets fout tijdens het verwijderen van een puzzel!')
 
                 if 'categoryID' not in request.POST:
                     messages.add_message(request, messages.DEBUG,

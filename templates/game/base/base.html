@@ -111,7 +111,7 @@
         <div class="footer container-fluid" style="background-color: #245221; color: #ffffff">
             <div class="container" style="padding-top: 10px; padding-bottom: 10px;">
                 <div class="row">
-                    <div class="col-6 text-center"><small style="font-size: 8px;" id="QRFooter">© QuantumRules!</small></div>
+                    <div class="col-6 text-center"><small style="font-size: 8px;" id="QRFooter">© QuantumRules! {% now "Y" %}</small></div>
                     <div class="col-6 text-center"><small style="font-size: 8px;">Created by Marcel Kolenbrander 2020</small></div>
                 </div>
             </div>
@@ -176,12 +176,6 @@
     }
 
     /* Head of the page message */
-
-
-    /* Footer copyright year */
-    $(document).ready(function () {
-        $("#QRFooter").text("© QuantumRules! " + new Date().getFullYear());
-    });
 
     {% if messages %}
         {% for message in messages %}

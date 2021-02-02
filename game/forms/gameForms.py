@@ -33,8 +33,8 @@ class GameForm(forms.ModelForm):
 
         labels = {
             'gameName':             'Spelnaam',
-            'accessThroughTag':     'Speltoegang via tag',
-            'accessTag':            'Speltag',
+            'accessThroughTag':     'Speltoegang via toegangscode',
+            'accessTag':            'Spel toegangscode',
             'noDateNorTime':        'Spel is niet tijd/datum afhankelijk',
             'startDateTime':        'Startmoment van het spel',
             'endDateTime':          'Sluitingsmoment van het spel',
@@ -46,6 +46,8 @@ class GameForm(forms.ModelForm):
             'startDateTime':        'Format is: jjjj-mm-dd uu:mm:ss',
             'endDateTime':          'Format is: jjjj-mm-dd uu:mm:ss',
             'generalText':          'Zowel markdown als LaTeX math zijn ondersteund!',
+            'accessThroughTag':     'Door dit aan te zetten kunnen spelers alleen het spel vinden door de hier onder ingevulde toegangscode te gebruiken op het beginscherm!',
+            'accessTag':            'Spelers kunnen deze toegangscode gebruiken om in het spel te komen. Deze tag <strong>kan</strong> en <strong>mag</strong> anders zijn dan de naam van het spel!',
         }
 
         widgets = {
@@ -83,6 +85,7 @@ class CatergoryFormEdit(forms.ModelForm):
         )
 
         labels = {
+            'categoryName':     'Puzzelnaam',
             'chained':          'Sequentieel verloop',
         }
 
@@ -111,7 +114,7 @@ class GameItemLinkFormEdit(forms.ModelForm):
         labels = {
             'itemOrder':            'Item volgorde',
             'hidden':               'Verborgen',
-            'gameItemContinueByGM': 'Game item moet wachten op input van gamemaster',
+            'gameItemContinueByGM': 'Game Master Onderdeel',
             # 'gameItemMaxTime':      'Maximum duurtijd van een game item',
             'maxScore':             'Aantal punten van game item',
             'faultPenalty':         'Punten aftrek na fout antwoord',
@@ -178,3 +181,9 @@ class GameMasterForm_Game(forms.ModelForm):
             'startDateTime':    forms.DateTimeInput(attrs={'placeholder': 'jjjj-mm-dd uu:mm:ss'}),
             'endDateTime':      forms.DateTimeInput(attrs={'placeholder': 'jjjj-mm-dd uu:mm:ss'}),
         }
+
+    def disableFields(self):
+        self.fields['startDateTime'].disabled = True
+        self.fields['startDateTime'].help_text = 'Dit spel heeft <b>geen</b> timer, de begin en eind tijd kunnen daarom niet worden aangepast!'
+        self.fields['endDateTime'].disabled = True
+        self.fields['endDateTime'].help_text = 'Dit spel heeft <b>geen</b> timer, de begin en eind tijd kunnen daarom niet worden aangepast!'

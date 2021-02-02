@@ -57,8 +57,20 @@
 
             {% block item_content_post %}
                 {% if item.gameItemContinueByGM %}
-                    <p>Ga naar de spelleider om je antwoord goed te laten keuren! <small><i>Geef de volgende ID door:
-                        #{{ item.gameItemLinkID }}</i></small></p>
+                    <p>Ga naar de spelleider om je antwoord goed te laten keuren!
+                        <small>
+                            <i>
+                                Geef de volgende gegevens door:
+                                <strong>
+                                    PiD-#{{ item.category.categoryID }}
+                                </strong>
+                                en
+                                <strong>
+                                    IiD-#{{ item.gameItemLinkID }}
+                                </strong>
+                            </i>
+                        </small>
+                    </p>
                 {% else %}
                     <form id="postForm" action="{% url 'game:modulePost' game.gameID item.gameItemLinkID %}"
                           method="post">

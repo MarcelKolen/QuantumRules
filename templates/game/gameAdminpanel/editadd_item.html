@@ -1,6 +1,10 @@
 {% extends 'game/gameAdminpanel/base/base.html' %}
 
 {% block body_content %}
+    {% block change_warning %}
+        <p><small>Let op! Aanpassingen in een item hebben effect op alle spellen waar dit item wordt gebruikt.</small></p>
+    {% endblock change_warning %}
+
     {% block item_header %}
         <h1 id="itemNameHeader">
             {% block header_name %}
@@ -26,7 +30,7 @@
 
             <button type="submit" class="btn btn-primary">
                 {% block submit_button_content %}
-                    Verstuur!
+                    Opslaan!
                 {% endblock submit_button_content %}
             </button>
         </form>

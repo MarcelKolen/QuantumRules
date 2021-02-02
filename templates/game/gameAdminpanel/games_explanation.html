@@ -1,0 +1,109 @@
+<div class="container">
+    <p>
+        Hieronder staan de verschillende spellen waar spelers aan mee kunnen doen. Een spel bestaat uit
+        verschillende <strong>puzzels</strong> en een puzzel bestaat weer uit verschillende <strong>vragen</strong>
+        en <strong>spelonderdelen</strong>.
+    </p>
+    <p>
+        Puzzels worden in een spel aangemaakt en mogen uit één of meerdere vragen en spelonderdelen
+        bestaan. Een puzzel kan veschillende instellingen hebben waaronder <strong>sequentieel</strong>.
+        Een puzzel die sequentieel is, is een puzzel waarbij de vragen/spelonderdelen één voor één
+        bezocht moeten worden. Spelers moeten starten bij de eerste vraag, en moeten deze vraag afronden
+        voordat zij verder kunnen naar de volgende vraag.
+    </p>
+    <p>
+        In een puzzel kun je verschillende instellingen toepassen op de <strong>spelonderdelen</strong>.
+    <ul>
+        <li>
+            <strong>Verborgen</strong> Wanneer een vraag/onderdeel verborgen is, komt deze niet voor in
+            de lijst welke spelers op de hoofdpagina van een spel kunnen zien, maar, dit onderdeel zal
+            wel worden bezocht, mits een puzzel staat aangemerkt als <strong>sequentieel</strong>.
+        </li>
+        <li>
+            <strong>Game Master Onderdeel</strong> Wanneer een vraag/onderdeel staat aangemerkt als Game
+            Master Onderdeel, zal dit onderdeel alleen kunnen worden afgesloten door een Game Master.
+            Spelers moeten bijvoorbeeld hun antwoorden op een vraag goed laten keuren door de Game
+            Master. De Game Master kan dan via diens eigen telefoon of laptop, via het Game Master
+            paneel, de vraag goedkeuren én er een score aan verbinden.
+        </li>
+        <li>
+            <strong>Aantal punten van onderdeel</strong> Hiermee wordt het aantal punten dat spelers
+            kunnen verdienen met een onderdeel aangegeven.
+        </li>
+        <li>
+            <strong>Punten aftrek na fout antwoord</strong> Hiermee wordt het aantal punten aftrek <i>per</i>
+            fout antwoord weergegeven. Als een vraag twee keer fout beantwoord wordt, dan is de
+            uiteindelijke score <small><i><strong>Totaal aantal punten</strong></i> min (<i><strong>punten
+            aftrek per fout</strong></i> maal <i><strong>aantal foute antwoorden</strong></i>)</small>.
+        </li>
+        <li>
+            <strong>Maximum aantal foute antwoorden mogelijk</strong> Dit is het maximum aantal foute
+            antwoorden dat een spelers mogen geven op een vraag voordat de vraag automatisch verder gaat
+            <strong>zonder</strong> enige punten toekenning. Als spelers een oneindig aantal kansen
+            moeten hebben moet dit op <strong>0</strong> worden ingesteld.
+        </li>
+    </ul>
+    </p>
+    <p>
+        Spellen kunnen worden <strong>geopend</strong> en <strong>gepubliceerd</strong>. Om een spel
+        beschikbaar te maken voor spelers moet het zowel geopend als gepubliceerd zijn. Het <i>publiceren</i>
+        van een spel reset het volledig spel en berekent alle mogelijk punten, dit maakt het spel klaar
+        om te spelen. Door het spel vervolgend te <i>openen</i> maak je het beschikbaar voor spelers.
+        Als je een spel wilt testen als <strong>game master</strong> of <strong>game creator</strong>
+        moet je het spel alleen <i>publiceren</i> en <strong>niet</strong> <i>openen</i>. De
+        <i>kaarten</i> geven ook wat de status van een spel is. Rechtsbovenin staat uitgeschreven of een
+        spel gepubliceerd en/of geopend is. Een kaartje met een <span class="text-success">groene</span>
+        rand geeft aan dat deze toegankelijk is voor spelers, een kaartje met een <span
+            class="text-warning">gele</span> rand geeft aan dat deze alleen toegankelijk is voor testen
+        en een kaartje met een <span class="text-danger">rode</span> rand geeft aan dat een spel niet
+        gespeeld kan worden.
+    </p>
+    <p>
+        De knoppen
+        <button
+                class="btn btn-primary btn-sm">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-clipboard"
+                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                <path fill-rule="evenodd"
+                      d="M9.5 1h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+            </svg>
+        </button>
+        ,
+        <button
+                class="btn btn-primary btn-sm">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill"
+                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+            </svg>
+        </button>
+        en
+        <button
+                class="btn btn-danger btn-sm">
+            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                 class="bi bi-trash-fill"
+                 fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+            </svg>
+        </button>
+        betekenen <strong>dupliceren</strong> <small><i>(ook wel kopëren)</i></small>,
+        <strong>aanpassen</strong> en <strong>verwijderen</strong> van een spel respectievelijk. Let op, een
+        gepubliceerd spel kan niet verwijderd worden, deze zal dan eerst ge-de-publiceerd moeten worden.
+    </p>
+    <p>
+        Een spel toevoegen kan door op de
+        <button
+                class="btn btn-primary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                 fill="currentColor"
+                 class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+        </button>
+        knop rechtsbovenin te klikken.
+    </p>
+</div>

@@ -182,7 +182,7 @@ class Items:
                 if module_item[0] is False:
                     messages.add_message(request, messages.ERROR,
                                          'Er ging iets fout tijdens het toevoegen van een game item!')
-                    self.get(request, typeID, categoryID, gameID)
+                    return self.get(request, typeID, categoryID, gameID)
 
                 # Add new module item to register for all items
                 module = AllModuleItems(type=request.POST['typeID'], fkID=module_item[1].ID)

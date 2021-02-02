@@ -2,31 +2,64 @@
 
 {% block body_content %}
     <div class="row">
-        <div class="col-sm-6">
-            <div class="jumbotron">
-                <h1 class="display-3">Games</h1>
-                <hr class="my-4">
-                <p>Hier kunnen <b>games</b> worden gemaakt, aangepast, verwijderd en gepubliceerd.</p>
-                <a class="btn btn-primary btn-lg" href="{% url 'game:adminpanelGames' %}" role="button">Ga naar games</a>
-            </div>
-        </div>
+        <div class="col">
+            <div class="card-deck">
 
-        <div class="col-sm-6">
-            <div class="jumbotron">
-                <h1 class="display-3">Game items</h1>
-                <hr class="my-4">
-                <p>Hier kunnen <b>game items</b> worden gemaakt, aangepast, verwijderd en gepubliceerd.</p>
-                <a class="btn btn-primary btn-lg" href="{% url 'game:adminpanelModules' %}" role="button">Ga naar game items</a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="jumbotron">
-                <h1 class="display-3">Game Masters</h1>
-                <hr class="my-4">
-                <p>Hier kunnen <b>game master</b> spellen begeleiden.</p>
-                <a class="btn btn-primary btn-lg" href="{% url 'game:gamemasterIndex' %}" role="button">Ga naar Game Master paneel</a>
+                <div class="card border-primary">
+                    <div class="card-header">
+                        <h4 class="text-center">Spellen</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Hier kunnen <b>spellen</b> worden gemaakt, aangepast, verwijderd en gepubliceerd.</p>
+                        <p><small>Een spel is een ruimte waar spelers in komen om QuantumRules! te spelen. Een spel
+                            bestaat uit één of meerder puzzels en een puzzel kan bestaan uit één of meerdere
+                            spelobjecten.</small></p>
+                        <p><small>Naast puzzels en spelobjecten hebben spellen ook een aantal instellingen waarmee de
+                            dynamiek van een spel veranderd kan worden.</small></p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a class="btn btn-primary btn-sm" href="{% url 'game:adminpanelGames' %}" role="button">Ga naar
+                            games</a>
+                    </div>
+                </div>
+
+                <div class="card border-primary">
+                    <div class="card-header"><h4 class="text-center">Vragen en Spelonderdelen</h4></div>
+                    <div class="card-body">
+                        <p>Hier kunnen <b>spelonderdelen</b> en <b>vragen</b> worden gemaakt, aangepast en verwijderd.</p>
+                        <p><small>Spelonderdelen en vragen zijn niets meer dan <i>objecten</i> van een
+                            <strong>module</strong>. Er zijn veel verschillende soorten modules in QuantumRules! Een
+                            aantal van deze modules zijn echt bedoeld als individuele vragen, zoals <strong>multiple
+                                choice</strong>, maar er zijn ook modules voor uitleg en vormgeving, of bijvoorbeeld
+                            voor <i>teaching assistant</i> vragen zoals <strong>text item</strong> onderdelen.</small>
+                        </p>
+                        <p><small>Verder zijn er ook modules <i>(spelonderdelen/vragen)</i> die volledig als
+                            <i>minigames</i> fungeren.</small></p>
+                        <p><small>Al deze spelonderdelen en vragen kunnen in een spel gebruikt worden door ze in puzzels
+                            te laden.</small></p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a class="btn btn-primary btn-sm" href="{% url 'game:adminpanelModules' %}" role="button">Ga
+                            naar vragen en spelonderdelen</a>
+                    </div>
+                </div>
+
+                <div class="card border-danger">
+                    <div class="card-header"><h4 class="text-center">Game Masters</h4></div>
+                    <div class="card-body">
+                        <p>Hier kunnen <b>game master</b> spellen begeleiden.</p>
+                        <p><small>Game masters kunnen hier spellen begeleiden door on the fly een aantal
+                            <b>instellingen</b> te veranderen, <b>aankondigingen</b> te versturen of <b>teaching
+                                assistant</b> vragen goed te keuren.</small></p>
+                        <p><small>Een spel kan hier alleen gevonden worden als deze door de <b>game creators</b> is <b>gepubliceerd</b>.</small>
+                        </p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a class="btn btn-danger btn-sm" href="{% url 'game:gamemasterIndex' %}" role="button">Ga naar
+                            game master paneel</a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

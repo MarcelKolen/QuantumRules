@@ -67,6 +67,9 @@ class GameMaster:
             # Con struct the forms
             gameForm = GameMasterForm_Game(instance=game)
 
+            if game.noDateNorTime:
+                gameForm.disableFields()
+
             announcementForm = AnnouncementForm()
 
             context = {

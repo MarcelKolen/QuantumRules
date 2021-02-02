@@ -3,6 +3,7 @@ from django.db import models
 from modules.module_manager import *
 from modules.models import AllModuleItems
 
+
 class Game(models.Model):
     gameID = models.AutoField(primary_key=True)
     gameName = models.CharField(max_length=100)

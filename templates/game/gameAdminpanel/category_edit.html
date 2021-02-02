@@ -13,101 +13,192 @@
 {% block body_content %}
     <!-- Category and items edit -->
     {% if game and category %}
-        <!-- Category settings -->
-        <h1 id="categoryNameHeader">{{ category.categoryName }}</h1>
-        <form method="post">
-            <div class="row">
-                <div class="col-md-12">
-                    {% csrf_token %}
-                    {{ categoryForm|crispy }}
-                </div>
+        <div class="row align-items-center">
+            <div class="col-sm-9">
+                <h1><span class="display-4">Puzzel</span> <span id="categoryNameHeader">{{ category }}</span></h1>
             </div>
+            <div class="col-sm-3 text-right">
+                <a class="btn btn-sm btn-outline-secondary" data-toggle="collapse" href="#explanation" role="button"
+                   aria-expanded="false">
+                    Toon uitleg over <strong>puzzels</strong>
+                </a>
+            </div>
+        </div>
 
-            <!-- Items formset -->
+        <div class="row collapse" id="explanation">
+            <div class="col">
+                <hr/>
+                {% include "game/gameAdminpanel/category_edit_explanation.html" %}
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <div class="col">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-gamesettings"
+                           role="tab" aria-controls="nav-home" aria-selected="true">Puzzelinstellingen</a>
+                        <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-puzzles" role="tab"
+                           aria-controls="nav-profile" aria-selected="false">Vragen en spelonderdelen</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <form method="post" id="puzzelForm">
+
             <div class="row">
-                <div class="col-md-12">
-                    <h3>Items</h3>
-                    {% if gameItems %}
-                        {% csrf_token %}
-                        {{ currentItemsForm.management_form }}
+                <div class="col">
+                    <div class="tab-content" id="nav-tabContent">
+                        <!-- Puzzle settings -->
+                        <div class="tab-pane fade show active mt-4" id="nav-gamesettings" role="tabpanel">
+                            <div class="row">
+                                <div class="col">
+                                    {% csrf_token %}
+                                    {{ categoryForm|crispy }}
+                                </div>
+                            </div>
+                        </div>
 
-                        <!-- Item settings -->
-                        <div class="accordion" id="categorieAccordion">
-                            {% for form in currentItemsForm %}
+                        <!-- Items (or categories in devterms) -->
+                        <div class="tab-pane fade mt-4" id="nav-puzzles" role="tabpanel">
+                            {% if gameItems %}
+                                {{ currentItemsForm.management_form }}
+
+                                <!-- Item settings -->
                                 <div class="accordion" id="categorieAccordion">
-                                    <div class="card">
-                                        <div class="card-header" id="heading{{ forloop.counter }}">
-                                            <h2 class="mb-0">
-                                                <button class="btn btn-link btn-block text-left {% if not forloop.first %}collapsed{% endif %}"
-                                                        type="button" data-toggle="collapse"
-                                                        data-target="#collapse{{ forloop.counter }}"
-                                                        aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
-                                                        aria-controls="collapseOne">
-                                                    {{ form.instance }} (Type: {{ form.instance.module.type_str }})
-                                                </button>
-                                            </h2>
-                                        </div>
-                                        <div id="collapse{{ forloop.counter }}"
-                                             class="collapse {% if forloop.first %}show{% endif %}"
-                                             aria-labelledby="heading{{ forloop.counter }}"
-                                             data-parent="#categorieAccordion">
-                                            <div class="card-body">
-                                                {{ form|crispy }}
+                                    {% for form in currentItemsForm %}
+                                        <div class="accordion" id="categorieAccordion">
+                                            <div class="card">
+                                                <div class="card-header" id="heading{{ forloop.counter }}">
+                                                    <h2 class="mb-0">
+                                                        <button class="btn btn-link btn-block text-left {% if not forloop.first %}collapsed{% endif %}"
+                                                                type="button" data-toggle="collapse"
+                                                                data-target="#collapse{{ forloop.counter }}"
+                                                                aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                                                aria-controls="collapseOne">
+                                                            <span class="row">
+                                                                <span class="col">
+                                                                    {{ form.instance }} (Type: {{ form.instance.module.type_str }})
+                                                                </span>
+                                                                {% if form.instance.hidden %}
+                                                                    <span class="col text-right">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                             width="16" height="16" fill="currentColor"
+                                                                             class="bi bi-eye-slash"
+                                                                             viewBox="0 0 16 16">
+                                                                            <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                                                                            <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299l.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                                                                            <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884l-12-12 .708-.708 12 12-.708.708z"/>
+                                                                        </svg>
+                                                                    </span>
+                                                                {% endif %}
+                                                            </span>
+                                                        </button>
+                                                    </h2>
+                                                </div>
+                                                <div id="collapse{{ forloop.counter }}"
+                                                     class="collapse {% if forloop.first %}show{% endif %}"
+                                                     aria-labelledby="heading{{ forloop.counter }}"
+                                                     data-parent="#categorieAccordion">
+                                                    <div class="card-body">
+
+                                                        <div class="form-row">
+                                                            <div class="col-2">
+                                                                {{ form.itemOrder|as_crispy_field }}
+                                                            </div>
+                                                            <div class="col-5">
+                                                                {{ form.hidden|as_crispy_field }}
+                                                            </div>
+                                                            <div class="col-5">
+                                                                {{ form.gameItemContinueByGM|as_crispy_field }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-row">
+                                                            <div class="col-4">
+                                                                {{ form.maxScore|as_crispy_field }}
+                                                            </div>
+                                                            <div class="col-4">
+                                                                {{ form.faultPenalty|as_crispy_field }}
+                                                            </div>
+                                                            <div class="col-4">
+                                                                {{ form.maxNumAttempts|as_crispy_field }}
+                                                            </div>
+                                                        </div>
+
+                                                        <a class="btn btn-primary"
+                                                           href="{% url 'game:adminpanelModulesEdit' form.instance.module.id %}"
+                                                           role="button">
+                                                            <strong>Bekijken</strong>/<strong>Aanpassen</strong>
+                                                            <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                                 class="bi bi-pencil-fill"
+                                                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd"
+                                                                      d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                                                            </svg>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p>Er zijn geen vragen/spelonderdelen</p>
+                            {% endif %}
+
+                            {% if game.published == False %}
+                                <hr/>
+
+                                <!-- Add item form -->
+                                <div class="row">
+                                    <div class="col" id="addItemForm">
+                                        <form action="{% url 'game:adminpanelCategoriesAddItemConstruct' %}"
+                                              method="get">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="categoryID" value="{{ category.categoryID }}">
+                                            <input type="hidden" name="gameID" value="{{ game.gameID }}">
+                                            {{ prime_item_form|crispy }}
+
+                                            <button type="button" class="btn btn-primary" onclick="addNewItem()">
+                                                Voeg een nieuwe vraag/een nieuw spelonderdeel toe
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus"
+                                                     fill="currentColor"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                          d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
-                            {% endfor %}
+                            {% endif %}
                         </div>
-                    {% else %}
-                        <p>Er zijn geen items</p>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
-            <br/>
 
             <input type="hidden" name="gameID" value="{{ game.gameID }}">
             <input type="hidden" name="categoryID" value="{{ category.categoryID }}">
 
-            <!-- Submit button -->
-            {% if game.published == False %}
-                <div class="row">
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-primary">
-                            Aanpassen
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill"
-                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            {% endif %}
-
         </form>
 
+        <!-- Submit button -->
         {% if game.published == False %}
-            <hr class="my-4">
-
-            <!-- Add item form -->
+            <hr/>
             <div class="row">
-                <div class="col-md-12">
-                    <form action="{% url 'game:adminpanelCategoriesAddItemConstruct' %}" method="get">
-                        {% csrf_token %}
-                        <input type="hidden" name="categoryID" value="{{ category.categoryID }}">
-                        <input type="hidden" name="gameID" value="{{ game.gameID }}">
-                        {{ prime_item_form|crispy }}
-
-                        <button type="submit" class="btn btn-primary">
-                            Voeg een nieuwe item toe
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                            </svg>
-                        </button>
-                    </form>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" onclick="$('#puzzelForm').submit()"
+                            data-toggle="tooltip" data-placement="bottom" title="Aanpassingen opslaan">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill"
+                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         {% endif %}
@@ -118,6 +209,14 @@
 {% block baseAdminpanel_javascript %}
 
     <script>
+        function addNewItem() {
+            const selectedItem = $("#{{ prime_item_form.item_type.auto_id }}").val();
+            const gameID = "{{ game.gameID }}";
+            const categoryID = "{{ category.categoryID }}";
+            const baseURL = "{% url 'game:adminpanelCategoriesAddItemConstruct' %}";
+            window.location.assign(`${baseURL}?item_type=${selectedItem}&categoryID=${categoryID}&gameID=${gameID}`)
+        }
+
         $(document).ready(function () {
             categoryNameInputField = $("#id_categoryName");
             categoryNameHeader = $("#categoryNameHeader");
@@ -128,6 +227,8 @@
                 else
                     categoryNameHeader.text("{{ category.categoryName }}");
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
         })
     </script>
 
