@@ -214,6 +214,9 @@ class Games:
                 # Remove ID of current object to force a new database entry at .save()
                 new_game.gameID = None
                 new_game.gameName += ' Kopie'
+                
+                if new_game.accessThroughTag or new_game.accessTag is not None:
+                    new_game.accessTag += ' Kopie'
 
                 # Ensure that the game is not published
                 new_game.published = False
