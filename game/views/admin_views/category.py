@@ -304,6 +304,11 @@ class Categories:
 
                     category = Category.objects.get(categoryID=request.POST['categoryID'])
                     category.delete()
+                    
+                    messages.add_message(request, messages.SUCCESS,
+                                             'Puzzel succesvol verwijderd.')
+                    
+                    return redirect('game:adminpanelGamesEdit', gameID=request.POST['gameID'])
                 except Game.DoesNotExist:
                     messages.add_message(request, messages.ERROR,
                                          'Er is een fout opgetreden bij het verwijderen van een puzzel. Controleer of het spel nog bestaat.')
